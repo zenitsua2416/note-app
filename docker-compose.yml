@@ -8,8 +8,8 @@ services:
       - ./api/src:/app/src
       - ./api/logs:/app/logs
       - ./api/dist:/app/dist
-    environment:
-      - JWT_SECRET=jaf912ijxsdnsdfpafdalsdf165uysdufasddfasdfajdflsdfadlKlszxnLlLnddfasdllzxno10817862
+    env_file:
+      - .env
 
   client:
     build:
