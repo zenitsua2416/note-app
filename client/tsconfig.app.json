@@ -20,7 +20,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    "types": ["vitest/globals"]
   },
-  "include": ["src"]
+  "include": ["src/**/*", "src/vitest.setup.ts"],
+  "extends": "./tsconfig.paths.json"
 }
