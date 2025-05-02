@@ -10,10 +10,6 @@
     "prettier-plugin-tailwindcss": "^0.6.11"
   },
   "lint-staged": {
-    "api/src/**/*.{ts,tsx,js,jsx}": [
-      "pnpm eslint -c ./api/eslint.config.js --fix api",
-      "pnpm prettier --config .prettierrc --write api"
-    ],
     "client/src/**/*.{ts,tsx,js,jsx}": [
       "pnpm eslint -c ./client/eslint.config.js --fix client",
       "pnpm prettier --config .prettierrc --write client"
