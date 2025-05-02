@@ -1,11 +1,10 @@
-import { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 
 import { NavBar } from "@/components/layout";
 
-export const DefaultLayout = ({ children }: { children: ReactNode }) => (
+export const DefaultLayout = () => (
   <>
     <NavBar />
-    {children}
-    {/* Add a footer if needed */}
+    <Outlet />
   </>
 );

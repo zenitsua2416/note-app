@@ -1,11 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { config } from "@/config";
+import { Theme } from "@/types";
+import { loadFromStorage, saveToStorage } from "@/utils";
 
 import { ThemeState } from "./themeSlice.types";
 
+let defaultTheme = loadFromStorage<Theme>("theme");
+
+if (!defaultTheme) {
+  saveToStorage("theme", config.defaultTheme);
+  defaultTheme = config.defaultTheme;
+}
+
 const initialState: ThemeState = {
-  theme: config.defaultTheme,
+  theme: defaultTheme,
 };
 
 export const themeSlice = createSlice({

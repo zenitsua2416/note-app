@@ -13,6 +13,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@heroui/react": "^2.7.8",
     "@heroui/switch": "^2.2.9",
     "@heroui/system": "^2.4.7",
     "@heroui/theme": "^2.4.6",
@@ -20,8 +21,10 @@
     "@supabase/supabase-js": "^2.49.4",
     "eslint-plugin-prettier": "^5.2.6",
     "framer-motion": "^12.4.2",
+    "lucide-react": "^0.506.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.56.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.5.3"
   },
