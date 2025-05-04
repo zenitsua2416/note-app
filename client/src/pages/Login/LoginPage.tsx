@@ -5,15 +5,39 @@ import { useForm } from "react-hook-form";
 import { Button, Checkbox, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
 
+import { login } from "@/features";
+import { useAppDispatch } from "@/hooks";
+import { supabase } from "@/supabase";
+import { AuthSession } from "@/types";
+
 import { LoginFormFields } from "./LoginPage.types";
 
 export const LoginPage = () => {
-  const { register, handleSubmit } = useForm<LoginFormFields>({
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { isSubmitting, errors },
+  } = useForm<LoginFormFields>({
     mode: "onChange",
   });
 
-  const onSubmit = (data: LoginFormFields) => {
-    console.log(data);
+  const dispatch = useAppDispatch();
+
+  const onSubmit = async (data: LoginFormFields) => {
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
+
+    if (error) setError("root", { message: error.message });
+    else if (session) {
+      // success
+      dispatch(login(session as AuthSession));
+    }
   };
 
   const [isVisible, setIsVisible] = useState(false);
@@ -42,6 +66,7 @@ export const LoginPage = () => {
               placeholder="Enter your email"
               type="email"
               variant="bordered"
+              errorMessage={errors.email?.message}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -60,6 +85,7 @@ export const LoginPage = () => {
               placeholder="Enter your password"
               type={isVisible ? "text" : "password"}
               variant="bordered"
+              errorMessage={errors.password?.message}
               {...register("password", {
                 required: "Password is required",
                 minLength: {
@@ -80,7 +106,7 @@ export const LoginPage = () => {
                 input: "text-default-700",
               }}
             />
-            <div className="flex w-full items-center justify-between px-1 py-2">
+            <div className="flex w-full items-center justify-between px-1 pt-2">
               <Checkbox defaultSelected size="sm" {...register("remember")}>
                 Remember me
               </Checkbox>
@@ -89,7 +115,18 @@ export const LoginPage = () => {
               </Link>
             </div>
 
-            <Button color="primary" type="submit" className="mt-4">
+            {errors.root && (
+              <p className="text-small text-danger-500 text-center">
+                {errors.root.message}
+              </p>
+            )}
+
+            <Button
+              isLoading={isSubmitting}
+              color="primary"
+              type="submit"
+              className="mt-4"
+            >
               Log In
             </Button>
           </form>

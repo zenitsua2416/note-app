@@ -1,7 +1,7 @@
 import { RouterProvider } from "react-router-dom";
 
 import { selectTheme } from "@/features";
-import { useAppSelector } from "@/hook";
+import { useAppSelector } from "@/hooks";
 import { router } from "@/routes";
 
 const App = () => {

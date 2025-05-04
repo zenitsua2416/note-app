@@ -3,18 +3,25 @@ import { Link } from "react-router-dom";
 import { Switch, Button } from "@heroui/react";
 import { Sun, Moon } from "lucide-react";
 
-import { selectTheme, toggleTheme } from "@/features";
-import { useAppDispatch, useAppSelector } from "@/hook";
-import { saveToStorage } from "@/utils";
+import { logout, selectIsLoggedIn, selectTheme, toggleTheme } from "@/features";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { Theme } from "@/types";
+import { saveToStorage } from "@/utils";
 
 export const NavBar = () => {
-  const { theme } = useAppSelector(selectTheme);
   const dispatch = useAppDispatch();
+
+  const { theme } = useAppSelector(selectTheme);
+
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   const handleToggleTheme = () => {
     saveToStorage<Theme>("theme", theme === "light" ? "dark" : "light");
     dispatch(toggleTheme());
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   return (
@@ -36,9 +43,15 @@ export const NavBar = () => {
             endContent={<Moon />}
           />
 
-          <Link to="/login">
-            <Button variant="light">Login</Button>
-          </Link>
+          {isLoggedIn ? (
+            <Button variant="light" color="danger" onPress={handleLogout}>
+              Logout
+            </Button>
+          ) : (
+            <Link to="/login">
+              <Button variant="light">Login</Button>
+            </Link>
+          )}
         </div>
       </nav>
     </header>

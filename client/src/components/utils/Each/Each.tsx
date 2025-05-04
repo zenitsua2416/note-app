@@ -14,8 +14,6 @@ interface IEach<T> {
  * @param {IEach<T>} props - The props for Each component.
  * @returns {ReactNode} The rendered list of items.
  */
-const Each = <T,>({ of, render }: IEach<T>): ReactElement => (
+export const Each = <T,>({ of, render }: IEach<T>): ReactElement => (
   <>{Children.toArray(of.map((item, index) => render(item, index)))}</>
 );
-
-export default Each;

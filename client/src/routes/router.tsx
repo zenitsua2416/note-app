@@ -1,7 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import { withProtected, withRestrictedPublic } from "@/components/auth";
 import { DefaultLayout } from "@/layouts";
 import { HomePage, LoginPage, SignupPage } from "@/pages";
+
+const Home = withProtected(HomePage);
+const Login = withRestrictedPublic(LoginPage);
+const Signup = withRestrictedPublic(SignupPage);
 
 export const router = createBrowserRouter([
   {
@@ -10,15 +15,15 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <Home />,
       },
       {
         path: "login",
-        element: <LoginPage />,
+        element: <Login />,
       },
       {
         path: "signup",
-        element: <SignupPage />,
+        element: <Signup />,
       },
     ],
   },

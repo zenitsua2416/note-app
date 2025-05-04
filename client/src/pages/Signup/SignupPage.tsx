@@ -5,15 +5,27 @@ import { useForm } from "react-hook-form";
 import { Button, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
 
+import { supabase } from "@/supabase";
+
 import { SignupFormFields } from "./SignupPage.types";
 
 export const SignupPage = () => {
-  const { register, handleSubmit, watch } = useForm<SignupFormFields>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<SignupFormFields>({
     mode: "onChange",
   });
 
-  const onSubmit = (data: SignupFormFields) => {
-    console.log(data);
+  const onSubmit = async (data: SignupFormFields) => {
+    const { data: res, error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+    });
+
+    console.log(res, error);
   };
 
   const [isVisible, setIsVisible] = useState(false);
@@ -109,7 +121,12 @@ export const SignupPage = () => {
               }}
             />
 
-            <Button color="primary" type="submit" className="mt-4">
+            <Button
+              color="primary"
+              type="submit"
+              isLoading={isSubmitting}
+              className="mt-4"
+            >
               Sign Up
             </Button>
           </form>
