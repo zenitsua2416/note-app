@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
+import { Button } from "@heroui/react";
 import { PlusIcon } from "lucide-react";
 
 import { NoteGrid } from "@/components/ui";
@@ -9,7 +10,6 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { supabase } from "@/supabase";
 import { Note as INote } from "@/types";
 import { saveToStorage } from "@/utils";
-import { Button } from "@heroui/react";
 
 export const HomePage = () => {
   const dispatch = useAppDispatch();

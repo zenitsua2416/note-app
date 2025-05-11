@@ -1,6 +1,8 @@
-import { Note as NoteProps } from "@/types";
-import { Divider } from "@heroui/react";
 import { Link } from "react-router-dom";
+
+import { Divider } from "@heroui/react";
+
+import { Note as NoteProps } from "@/types";
 
 export const Note = ({ id, title, notes: content }: NoteProps) => (
   <div className="bg-default-200/50 hover:bg-default-200/75 inline-block cursor-pointer rounded-lg py-4">

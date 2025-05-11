@@ -1,5 +1,5 @@
-import { Each } from "@/components/utils";
 import { Note } from "@/components/ui";
+import { Each } from "@/components/utils";
 
 import { NoteGridProps } from "./NoteGrid.types";
 
