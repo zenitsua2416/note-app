@@ -1,28 +1,58 @@
-import { Switch } from "@heroui/switch";
+import { Link } from "react-router-dom";
 
-import { selectTheme, toggleTheme } from "@/features";
-import { useAppDispatch, useAppSelector } from "@/hook";
+import { Switch, Button } from "@heroui/react";
+import { Sun, Moon } from "lucide-react";
+
+import { logout, selectIsLoggedIn, selectTheme, toggleTheme } from "@/features";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { Theme } from "@/types";
+import { saveToStorage } from "@/utils";
 
 export const NavBar = () => {
-  const { theme } = useAppSelector(selectTheme);
   const dispatch = useAppDispatch();
 
-  const handleToggleTheme = () => dispatch(toggleTheme());
+  const { theme } = useAppSelector(selectTheme);
+
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+
+  const handleToggleTheme = () => {
+    saveToStorage<Theme>("theme", theme === "light" ? "dark" : "light");
+    dispatch(toggleTheme());
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   return (
     <header className="absolute w-full border shadow-md backdrop-blur-md dark:border-neutral-800">
-      <nav className="flex justify-between bg-transparent py-4 lg:mx-auto lg:w-[1000px]">
-        <a
-          href="/"
-          className="text-lg font-semibold hover:text-blue-500 dark:text-neutral-300 dark:hover:text-blue-500"
+      <nav className="max-w-app mx-auto flex items-center justify-between bg-transparent px-2 py-2">
+        <Link
+          to="/"
+          className="dark:text-default-700 text-lg font-semibold hover:text-blue-500 dark:hover:text-blue-500"
         >
-          Home
-        </a>
-        <Switch
-          defaultSelected={theme === "dark"}
-          isSelected={theme === "dark"}
-          onChange={handleToggleTheme}
-        />
+          Note App
+        </Link>
+
+        <div className="flex items-center gap-4">
+          <Switch
+            defaultSelected={theme === "dark"}
+            isSelected={theme === "dark"}
+            onChange={handleToggleTheme}
+            startContent={<Sun />}
+            endContent={<Moon />}
+          />
+
+          {isLoggedIn ? (
+            <Button variant="light" color="danger" onPress={handleLogout}>
+              Logout
+            </Button>
+          ) : (
+            <Link to="/login">
+              <Button variant="light">Login</Button>
+            </Link>
+          )}
+        </div>
       </nav>
     </header>
   );

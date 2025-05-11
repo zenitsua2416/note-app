@@ -8,7 +8,14 @@ export default {
     "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      maxWidth: {
+        app: "1024px",
+      },
+      fontFamily: {
+        inter: ["Inter", "sans-serif"],
+      },
+    },
   },
   darkMode: "class",
   plugins: [heroui()],
