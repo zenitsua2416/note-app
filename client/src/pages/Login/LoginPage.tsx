@@ -45,7 +45,7 @@ export const LoginPage = () => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <div className="h-screen pt-20">
+    <div className="h-full">
       <div className="flex h-full w-full items-center justify-center">
         <div className="rounded-large flex w-full max-w-sm flex-col gap-4 px-8 pb-10 pt-6">
           <p className="text-default-800 pb-4 text-left text-3xl font-semibold">

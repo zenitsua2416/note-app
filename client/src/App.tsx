@@ -8,11 +8,9 @@ const App = () => {
   const { theme } = useAppSelector(selectTheme);
 
   return (
-    <main className={theme === "dark" ? "dark" : ""}>
-      <div className="bg-default-50">
-        <RouterProvider router={router} />
-      </div>
-    </main>
+    <div className={theme === "dark" ? "dark" : ""}>
+      <RouterProvider router={router} />
+    </div>
   );
 };
 

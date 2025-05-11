@@ -26,7 +26,7 @@ export const HomePage = () => {
   }, [dispatch]);
 
   return (
-    <div className="max-w-app mx-auto h-screen pt-20">
+    <div className="max-w-app mx-auto h-full pt-5">
       <div className="mb-8">
         <h1 className="text-center text-3xl font-semibold text-blue-500">
           Home Page
