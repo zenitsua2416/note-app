@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import { PlusIcon } from "lucide-react";
 
@@ -9,7 +10,6 @@ import { supabase } from "@/supabase";
 import { Note as INote } from "@/types";
 import { saveToStorage } from "@/utils";
 import { Button } from "@heroui/react";
-import { Link } from "react-router-dom";
 
 export const HomePage = () => {
   const dispatch = useAppDispatch();
@@ -32,21 +32,24 @@ export const HomePage = () => {
           Home Page
         </h1>
       </div>
-      <NoteGrid
-        notes={notes}
-        endChild={
-          <Button
-            as={Link}
-            to="/note/new"
-            variant="bordered"
-            color="danger"
-            startContent={<PlusIcon />}
-            className="self-end"
-          >
-            Add Note
-          </Button>
-        }
-      />
+
+      <div className="px-2">
+        <NoteGrid
+          notes={notes}
+          endChild={
+            <Button
+              as={Link}
+              to="/note/new"
+              variant="ghost"
+              color="danger"
+              startContent={<PlusIcon />}
+              className="self-end"
+            >
+              Add Note
+            </Button>
+          }
+        />
+      </div>
     </div>
   );
 };
