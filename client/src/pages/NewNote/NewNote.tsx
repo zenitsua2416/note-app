@@ -1,1 +1,69 @@
-export const NewNotePage = () => "New Note Page";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+import { Button } from "@heroui/react";
+import { FilePlus2 } from "lucide-react";
+
+import { NewNoteFormData } from "./NewNote.types";
+
+export const NewNotePage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<NewNoteFormData>();
+
+  const onSubmit: SubmitHandler<NewNoteFormData> = async (data) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // TODO: Submit form data to API
+    console.log(data);
+  };
+
+  return (
+    <div className="max-w-app mx-auto pt-5">
+      <div className="px-2">
+        <h1 className="text-center text-3xl font-semibold">Create Note</h1>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mt-10 flex flex-col gap-4">
+            <div className="my-8">
+              <input
+                type="text"
+                autoComplete="off"
+                disabled={isSubmitting}
+                {...register("title", {
+                  required: true,
+                  validate: (value) => {
+                    if (value.length === 0) {
+                      return "Title is required";
+                    }
+                  },
+                })}
+                placeholder="Title goes here"
+                className="hover:bg-default-100 active:bg-default-100 focus:bg-default-100 text-default-900 w-full rounded-r-md border-l bg-transparent px-4 py-2 text-4xl font-black leading-6 outline-none lg:text-6xl"
+              />
+            </div>
+
+            <div className="mb-8">
+              <textarea
+                {...register("notes")}
+                disabled={isSubmitting}
+                placeholder="We support markdown"
+                rows={10}
+                className="hover:bg-default-100 focus:bg-default-100 w-full resize-none rounded-md bg-transparent p-4 font-mono text-lg outline-none"
+              />
+            </div>
+
+            <Button
+              color="primary"
+              isLoading={isSubmitting}
+              startContent={!isSubmitting && <FilePlus2 size={20} />}
+              type="submit"
+            >
+              Create Note
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
