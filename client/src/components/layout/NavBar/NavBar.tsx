@@ -25,7 +25,7 @@ export const NavBar = () => {
   };
 
   return (
-    <header className="absolute w-full border shadow-md backdrop-blur-md dark:border-neutral-800">
+    <header className="sticky top-0 w-full border shadow-md backdrop-blur-md dark:border-neutral-800">
       <nav className="max-w-app mx-auto flex items-center justify-between bg-transparent px-2 py-2">
         <Link
           to="/"
