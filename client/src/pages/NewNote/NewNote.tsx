@@ -1,11 +1,21 @@
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@heroui/react";
 import { FilePlus2 } from "lucide-react";
 
+import { addNotes, selectAuthUser } from "@/features";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { supabase } from "@/supabase";
+
 import { NewNoteFormData } from "./NewNote.types";
 
 export const NewNotePage = () => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectAuthUser);
+
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -14,8 +24,25 @@ export const NewNotePage = () => {
 
   const onSubmit: SubmitHandler<NewNoteFormData> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    // TODO: Submit form data to API
-    console.log(data);
+    const { data: notes, error } = await supabase
+      .from("note")
+      .insert([
+        {
+          title: data.title,
+          notes: data.notes,
+          in_trash: false,
+          user_id: user.id,
+        },
+      ])
+      .select();
+
+    if (error) {
+      console.error(error);
+      return;
+    } else {
+      dispatch(addNotes(notes));
+      navigate(`/note/${notes[0]}`);
+    }
   };
 
   return (
