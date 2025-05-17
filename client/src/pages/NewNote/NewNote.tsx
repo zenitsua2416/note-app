@@ -65,10 +65,10 @@ export const NewNotePage = () => {
                   required: "This field is required",
                 })}
                 placeholder="Title goes here"
-                className="hover:bg-default-100 active:bg-default-100 focus:bg-default-100 text-default-900 w-full rounded-r-md border-l bg-transparent px-4 py-2 text-4xl font-black leading-6 outline-none lg:text-6xl"
                 aria-required="true"
                 aria-invalid={!!errors.title}
                 aria-describedby="new-note-title-error"
+                className="hover:bg-default-100 active:bg-default-100 focus:bg-default-100 text-default-900 border-default-400 w-full rounded-r-md border-l-2 bg-transparent px-4 py-2 text-4xl font-black leading-6 outline-none lg:text-6xl"
               />
               {errors.title && (
                 <p
@@ -91,7 +91,7 @@ export const NewNotePage = () => {
                 disabled={isSubmitting}
                 placeholder="We support markdown"
                 rows={10}
-                className="hover:bg-default-100 focus:bg-default-100 w-full resize-none rounded-md bg-transparent p-4 font-mono text-lg outline-none"
+                className="hover:bg-default-100 text-default-600 focus:bg-default-100 w-full resize-none rounded-md bg-transparent p-4 font-mono text-lg outline-none"
               />
             </div>
 
