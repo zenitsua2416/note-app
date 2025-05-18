@@ -1,12 +1,12 @@
 /// <reference types="vitest" />
 /// <reference types="vite/client" />
 
-import { defineConfig, loadEnv } from "vite";
+import path from "node:path";
+
+import { defineConfig, loadEnv, UserConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteCompression from "vite-plugin-compression";
 import { visualizer } from "rollup-plugin-visualizer";
-
-import type { UserConfig } from "vite";
 
 /* Common Config for both PROD and DEV mode */
 const commonConfig: UserConfig = {
@@ -39,7 +39,7 @@ const commonConfig: UserConfig = {
   },
   resolve: {
     alias: {
-      "@": "./src",
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 };
