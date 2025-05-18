@@ -15,9 +15,9 @@ export const Note = ({ id, title, notes: content }: NoteProps) => (
     <div className="flex items-center px-4">
       <Link to={`/note/${id}`}>
         <span className="absolute inset-0"></span>
-        <h1 className="text-default-800 line-clamp-1 text-ellipsis text-lg font-semibold">
+        <h3 className="text-default-800 line-clamp-1 text-ellipsis text-lg font-semibold">
           {title}
-        </h1>
+        </h3>
       </Link>
     </div>
     <Divider className="my-2" />
