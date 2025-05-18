@@ -130,7 +130,7 @@ export const LoginPage = () => {
               Log In
             </Button>
           </form>
-          <p className="text-small text-default-800 text-center">
+          <p className="text-small text-default-800 text-center hover:underline">
             <Link to="/signup">Don&apos;t have account? Sign Up</Link>
           </p>
         </div>

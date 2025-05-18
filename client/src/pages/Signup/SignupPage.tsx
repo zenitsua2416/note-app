@@ -130,7 +130,7 @@ export const SignupPage = () => {
               Sign Up
             </Button>
           </form>
-          <p className="text-small text-center dark:text-slate-100">
+          <p className="text-small text-default-800 text-center hover:underline">
             <Link to="/login">Already have an account? Log In</Link>
           </p>
         </div>
