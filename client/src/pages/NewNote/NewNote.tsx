@@ -19,7 +19,7 @@ export const NewNotePage = () => {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<NewNoteFormData>();
 
   const onSubmit: SubmitHandler<NewNoteFormData> = async (data) => {
@@ -53,25 +53,40 @@ export const NewNotePage = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mt-10 flex flex-col gap-4">
             <div className="my-8">
+              <label htmlFor="new-note-title-field" className="sr-only">
+                Note Title:
+              </label>
               <input
                 type="text"
+                id="new-note-title-field"
                 autoComplete="off"
                 disabled={isSubmitting}
                 {...register("title", {
-                  required: true,
-                  validate: (value) => {
-                    if (value.length === 0) {
-                      return "Title is required";
-                    }
-                  },
+                  required: "This field is required",
                 })}
                 placeholder="Title goes here"
                 className="hover:bg-default-100 active:bg-default-100 focus:bg-default-100 text-default-900 w-full rounded-r-md border-l bg-transparent px-4 py-2 text-4xl font-black leading-6 outline-none lg:text-6xl"
+                aria-required="true"
+                aria-invalid={!!errors.title}
+                aria-describedby="new-note-title-error"
               />
+              {errors.title && (
+                <p
+                  id="new-note-title-error"
+                  className="mt-1 text-sm text-red-500"
+                  role="alert"
+                >
+                  {errors.title.message}
+                </p>
+              )}
             </div>
 
             <div className="mb-8">
+              <label htmlFor="new-note-content-field" className="sr-only">
+                Note Content:
+              </label>
               <textarea
+                id="new-note-content-field"
                 {...register("notes")}
                 disabled={isSubmitting}
                 placeholder="We support markdown"
@@ -85,6 +100,7 @@ export const NewNotePage = () => {
               isLoading={isSubmitting}
               startContent={!isSubmitting && <FilePlus2 size={20} />}
               type="submit"
+              aria-label="Create Note"
             >
               Create Note
             </Button>
