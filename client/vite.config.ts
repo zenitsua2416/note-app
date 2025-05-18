@@ -7,15 +7,15 @@ import viteCompression from "vite-plugin-compression";
 import { visualizer } from "rollup-plugin-visualizer";
 
 import type { UserConfig } from "vite";
-import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 /* Common Config for both PROD and DEV mode */
 const commonConfig: UserConfig = {
   plugins: [
     react(),
-    tsconfigPaths(),
-    viteCompression(),
+    viteCompression({
+      algorithm: "gzip",
+      deleteOriginFile: false,
+    }),
     visualizer({
       brotliSize: true,
       gzipSize: true,
@@ -24,25 +24,22 @@ const commonConfig: UserConfig = {
       filename: "dist/stats.html",
     }),
   ],
-  /* Customizing build folder structure */
-  build: {
-    /* 
-        Imported or referenced assets that are smaller than 4KiB threshold will be inlined as base64 URLs to avoid extra http requests.
-        Set to 0 to disable inlining altogether
-        */
-    assetsInlineLimit: 0,
-    rollupOptions: {
-      output: {
-        entryFileNames: "js/[name]-[hash].js",
-        assetFileNames: ({ name }) => {
-          if (/\.(webp|jpe?g|png)$/.test(name ?? "")) {
-            return "assets/images/[name]-[hash][extname]";
-          }
-          if (/\.(woff2|ttf)$/.test(name ?? ""))
-            return "assets/fonts/[name]-[hash][extname]";
-          return "[name]-[hash][extname]";
-        },
-      },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./src/vitest.setup.ts"],
+    css: true,
+    testTimeout: 5000,
+    reporters: ["verbose"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html", "lcov"],
+      reportsDirectory: "./coverage",
+    },
+  },
+  resolve: {
+    alias: {
+      "@": "./src",
     },
   },
 };
@@ -56,36 +53,11 @@ export default defineConfig(({ mode }): UserConfig => {
   if (mode === "production") {
     return {
       ...commonConfig,
-      plugins: [
-        commonConfig.plugins,
-        /* Image optimization for production build */
-        ViteImageOptimizer({
-          test: /\.(jpe?g|webp|png)$/i,
-          includePublic: false,
-          logStats: true,
-          jpg: {
-            quality: 90,
-          },
-          jpeg: {
-            quality: 90,
-          },
-          webp: {
-            quality: 90,
-          },
-          png: {
-            quality: 90,
-          },
-        }),
-      ],
+      plugins: [commonConfig.plugins],
       build: {
         ...commonConfig.build,
         sourcemap: "hidden", // Do not expose sourcemaps
-        minify: "terser", // Terser for minification
-        terserOptions: {
-          compress: {
-            drop_console: true,
-          },
-        },
+        minify: "esbuild",
       },
       server: {
         strictPort: true,
@@ -98,7 +70,7 @@ export default defineConfig(({ mode }): UserConfig => {
       ...commonConfig,
       build: {
         ...commonConfig.build,
-        sourcemap: "inline", // Include inline sourcemaps for easier debugging
+        sourcemap: "inline",
       },
       server: {
         strictPort: true,
