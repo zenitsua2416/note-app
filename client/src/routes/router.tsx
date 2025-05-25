@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-
 import { withProtected, withRestrictedPublic } from "@/components/auth";
 import { DefaultLayout } from "@/layouts";
 import {
@@ -16,6 +15,9 @@ const Note = withProtected(NotePage);
 const Login = withRestrictedPublic(LoginPage);
 const Signup = withRestrictedPublic(SignupPage);
 
+/**
+ * MAKE SURE TO MATCH ALL THE ROUTES FROM `constants/routes.ts`
+ */
 export const router = createBrowserRouter([
   {
     path: "/",
