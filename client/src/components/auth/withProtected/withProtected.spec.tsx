@@ -18,76 +18,64 @@ vi.mock("@/hooks", async () => {
 
 const mockedUseAppSelector = hooks.useAppSelector as unknown as Mock;
 
-const DummyComponent = () => <>SECRET content in here!!!</>;
-const LoginComponent = () => <>Login Page</>;
-const FallBackComponent = () => <>FALLBACK</>;
+const DummyComponent = () => "SECRET content in here!!!";
+const LoginComponent = () => "Login Page";
+const FallBackComponent = () => "FALLBACK";
 
 const myFallBackRoute = "/fallback";
 
-const MyRoutes = ({
-  ProtectedComponent,
-}: {
-  ProtectedComponent: JSX.Element;
-}) => (
-  <Routes>
-    <Route path="/" element={ProtectedComponent} />
-    <Route path="/login" element={<LoginComponent />} />
-    <Route path={myFallBackRoute} element={<FallBackComponent />} />
-  </Routes>
-);
+const setupWithProtected = (
+  isLoggedIn: boolean,
+  protectedComponent: JSX.Element,
+) => {
+  mockedUseAppSelector.mockReturnValue(isLoggedIn);
+
+  // Considering the "/" as the protected route
+  render(
+    <MemoryRouter initialEntries={["/"]}>
+      <Routes>
+        <Route path="/" element={protectedComponent} />
+        <Route path="/login" element={<LoginComponent />} />
+        <Route path={myFallBackRoute} element={<FallBackComponent />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+};
 
 describe("withProtected", () => {
   it("renders the protected component when user is logged in", () => {
-    mockedUseAppSelector.mockReturnValue(true);
-
     const Protected = withProtected(DummyComponent);
 
-    render(
-      <MemoryRouter>
-        <MyRoutes ProtectedComponent={<Protected />} />
-      </MemoryRouter>,
-    );
+    setupWithProtected(true, <Protected />);
 
-    const dummyComponent = screen.queryByText("SECRET content in here!!!");
+    const dummyComponent = screen.queryByText(DummyComponent());
     expect(dummyComponent).toBeInTheDocument();
   });
 
   it("redirects to fallback if user is not logged in", () => {
-    mockedUseAppSelector.mockReturnValue(false);
-
     const Protected = withProtected(DummyComponent);
 
-    render(
-      <MemoryRouter>
-        <MyRoutes ProtectedComponent={<Protected />} />
-      </MemoryRouter>,
-    );
+    setupWithProtected(false, <Protected />);
 
-    const dummyComponent = screen.queryByText("SECRET content in here!!!");
+    const dummyComponent = screen.queryByText(DummyComponent());
     expect(dummyComponent).not.toBeInTheDocument();
 
-    const loginComponent = screen.queryByText("Login Page");
+    const loginComponent = screen.queryByText(LoginComponent());
     expect(loginComponent).toBeInTheDocument();
   });
 
   it("redirects to custom fallback route when provided, if user is not logged in", () => {
-    mockedUseAppSelector.mockReturnValue(false);
-
     const Protected = withProtected(DummyComponent, myFallBackRoute);
 
-    render(
-      <MemoryRouter>
-        <MyRoutes ProtectedComponent={<Protected />} />
-      </MemoryRouter>,
-    );
+    setupWithProtected(false, <Protected />);
 
-    const dummyComponent = screen.queryByText("SECRET content in here!!!");
+    const dummyComponent = screen.queryByText(DummyComponent());
     expect(dummyComponent).not.toBeInTheDocument();
 
-    const loginComponent = screen.queryByText("Login Page");
+    const loginComponent = screen.queryByText(LoginComponent());
     expect(loginComponent).not.toBeInTheDocument();
 
-    const fallbackComponent = screen.queryByText("FALLBACK");
+    const fallbackComponent = screen.queryByText(FallBackComponent());
     expect(fallbackComponent).toBeInTheDocument();
   });
 });

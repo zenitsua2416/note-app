@@ -24,44 +24,38 @@ const FallBackComponent = () => "FALLBACK";
 
 const myFallBackRoute = "/fallback";
 
-const MyRoutes = ({
-  restrictedComponent,
-}: {
-  restrictedComponent: JSX.Element;
-}) => (
-  <Routes>
-    <Route path="/" element={<DummyComponent />} />
-    <Route path="/login" element={restrictedComponent} />
-    <Route path={myFallBackRoute} element={<FallBackComponent />} />
-  </Routes>
-);
+const setupWithRestrictedPublic = (
+  isLoggedIn: boolean,
+  restrictedComponent: JSX.Element,
+) => {
+  mockedUseAppSelector.mockReturnValue(isLoggedIn);
+
+  // Considering the "/login" as the protected route
+  render(
+    <MemoryRouter initialEntries={["/login"]}>
+      <Routes>
+        <Route path="/" element={<DummyComponent />} />
+        <Route path="/login" element={restrictedComponent} />
+        <Route path={myFallBackRoute} element={<FallBackComponent />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+};
 
 describe("withRestrictedPublic", () => {
   it("renders the restricted component when user is not logged in", () => {
-    mockedUseAppSelector.mockReturnValue(false);
-
     const PublicRestrictedComponent = withRestrictedPublic(LoginComponent);
 
-    render(
-      <MemoryRouter initialEntries={["/login"]}>
-        <MyRoutes restrictedComponent={<PublicRestrictedComponent />} />
-      </MemoryRouter>,
-    );
+    setupWithRestrictedPublic(false, <PublicRestrictedComponent />);
 
     const loginComponent = screen.queryByText(LoginComponent());
     expect(loginComponent).toBeInTheDocument();
   });
 
   it("redirects to fallback if user is not logged in", () => {
-    mockedUseAppSelector.mockReturnValue(true);
-
     const PublicRestrictedComponent = withRestrictedPublic(LoginComponent);
 
-    render(
-      <MemoryRouter initialEntries={["/login"]}>
-        <MyRoutes restrictedComponent={<PublicRestrictedComponent />} />
-      </MemoryRouter>,
-    );
+    setupWithRestrictedPublic(true, <PublicRestrictedComponent />);
 
     const loginComponent = screen.queryByText(LoginComponent());
     expect(loginComponent).not.toBeInTheDocument();
@@ -71,18 +65,12 @@ describe("withRestrictedPublic", () => {
   });
 
   it("redirects to custom fallback route when provided, if user is not logged in", () => {
-    mockedUseAppSelector.mockReturnValue(true);
-
     const PublicRestrictedComponent = withRestrictedPublic(
       DummyComponent,
       myFallBackRoute,
     );
 
-    render(
-      <MemoryRouter initialEntries={["/login"]}>
-        <MyRoutes restrictedComponent={<PublicRestrictedComponent />} />
-      </MemoryRouter>,
-    );
+    setupWithRestrictedPublic(true, <PublicRestrictedComponent />);
 
     const dummyComponent = screen.queryByText(DummyComponent());
     expect(dummyComponent).not.toBeInTheDocument();

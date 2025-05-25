@@ -17,11 +17,9 @@ describe("Note Component", () => {
   };
 
   it("renders the note title and link correctly", () => {
-    render(
-      <MemoryRouter>
-        <Note {...mockNote} />
-      </MemoryRouter>,
-    );
+    render(<Note {...mockNote} />, {
+      wrapper: MemoryRouter,
+    });
 
     // Check that the title is rendered
     const heading = screen.getByRole("heading", { level: 3 });
@@ -30,5 +28,15 @@ describe("Note Component", () => {
     // Check that the link has the correct href
     const link = screen.getByRole("link");
     expect(link).toHaveAttribute("href", NOTE_ROUTE(mockNote.id));
+  });
+
+  it("renders the description", () => {
+    render(<Note {...mockNote} />, {
+      wrapper: MemoryRouter,
+    });
+
+    // Check the description is rendered
+    const description = screen.getByRole("paragraph");
+    expect(description).toHaveTextContent(mockNote.notes as string);
   });
 });
