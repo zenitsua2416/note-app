@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@heroui/react";
 import { FilePlus2 } from "lucide-react";
 
+import { NOTE_ROUTE } from "@/constants";
 import { addNotes, selectAuthUser } from "@/features";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { supabase } from "@/supabase";
@@ -41,7 +42,7 @@ export const NewNotePage = () => {
       return;
     } else {
       dispatch(addNotes(notes));
-      navigate(`/note/${notes[0]}`);
+      navigate(NOTE_ROUTE(notes[0].id));
     }
   };
 

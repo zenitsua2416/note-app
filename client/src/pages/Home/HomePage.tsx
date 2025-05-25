@@ -5,6 +5,7 @@ import { Button } from "@heroui/react";
 import { PlusIcon } from "lucide-react";
 
 import { NoteGrid } from "@/components/ui";
+import { NEW_NOTE_ROUTE } from "@/constants";
 import { addNotes, selectNotes } from "@/features";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { supabase } from "@/supabase";
@@ -39,7 +40,7 @@ export const HomePage = () => {
           endChild={
             <Button
               as={Link}
-              to="/note/new"
+              to={NEW_NOTE_ROUTE}
               variant="ghost"
               color="danger"
               startContent={<PlusIcon />}

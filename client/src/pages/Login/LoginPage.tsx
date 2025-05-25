@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Button, Checkbox, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
 
+import { FORGOT_PASSWORD_ROUTE, SIGNUP_ROUTE } from "@/constants";
 import { login } from "@/features";
 import { useAppDispatch } from "@/hooks";
 import { supabase } from "@/supabase";
@@ -110,7 +111,7 @@ export const LoginPage = () => {
               <Checkbox defaultSelected size="sm" {...register("remember")}>
                 Remember me
               </Checkbox>
-              <Link className="text-default-500" to="/forgot-password">
+              <Link className="text-default-500" to={FORGOT_PASSWORD_ROUTE}>
                 Forgot password?
               </Link>
             </div>
@@ -131,7 +132,7 @@ export const LoginPage = () => {
             </Button>
           </form>
           <p className="text-small text-default-800 text-center hover:underline">
-            <Link to="/signup">Don&apos;t have account? Sign Up</Link>
+            <Link to={SIGNUP_ROUTE}>Don&apos;t have account? Sign Up</Link>
           </p>
         </div>
       </div>

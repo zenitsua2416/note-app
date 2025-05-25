@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Switch, Button } from "@heroui/react";
 import { Sun, Moon } from "lucide-react";
 
+import { HOME_ROUTE, LOGIN_ROUTE } from "@/constants";
 import { logout, selectIsLoggedIn, selectTheme, toggleTheme } from "@/features";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { Theme } from "@/types";
@@ -28,7 +29,7 @@ export const NavBar = () => {
     <header className="sticky top-0 w-full border shadow-md backdrop-blur-md dark:border-neutral-800">
       <nav className="max-w-app mx-auto flex items-center justify-between bg-transparent px-2 py-2">
         <Link
-          to="/"
+          to={HOME_ROUTE}
           className="dark:text-default-700 text-lg font-semibold hover:text-blue-500 dark:hover:text-blue-500"
         >
           Note App
@@ -48,7 +49,7 @@ export const NavBar = () => {
               Logout
             </Button>
           ) : (
-            <Link to="/login">
+            <Link to={LOGIN_ROUTE}>
               <Button variant="light">Login</Button>
             </Link>
           )}
