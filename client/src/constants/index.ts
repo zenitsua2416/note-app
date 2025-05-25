@@ -1,1 +1,8 @@
-export { HOME_ROUTE, NOTE_ROUTE, SIGNUP_ROUTE, LOGIN_ROUTE } from "./routes";
+export {
+  FORGOT_PASSWORD_ROUTE,
+  HOME_ROUTE,
+  LOGIN_ROUTE,
+  NEW_NOTE_ROUTE,
+  NOTE_ROUTE,
+  SIGNUP_ROUTE,
+} from "./routes";
