@@ -5,6 +5,7 @@ import {
   HomePage,
   LoginPage,
   NewNotePage,
+  NotFoundPage,
   NotePage,
   SignupPage,
 } from "@/pages";
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
             element: <Note />,
           },
         ],
+      },
+      {
+        path: "*",
+        element: <NotFoundPage />,
       },
     ],
   },
