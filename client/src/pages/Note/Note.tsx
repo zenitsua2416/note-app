@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 
+import { NoteNotFoundPage } from "@/pages";
 import { Note } from "@/types";
 import { loadFromStorage } from "@/utils";
 
@@ -9,7 +10,7 @@ export const NotePage = () => {
 
   if (!notes) return <div>Loading...</div>;
   const note = notes?.find((note) => note.id === id);
-  if (!note) return <div>Note not found</div>;
+  if (!note) return <NoteNotFoundPage />;
 
   return (
     <div className="max-w-app mx-auto pt-5">
