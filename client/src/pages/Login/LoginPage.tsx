@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Button, Checkbox, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
 
-import { FORGOT_PASSWORD_ROUTE, SIGNUP_ROUTE } from "@/constants";
+import { ROUTES } from "@/constants";
 import { login } from "@/features";
 import { useAppDispatch } from "@/hooks";
 import { supabase } from "@/supabase";
@@ -14,6 +14,8 @@ import { AuthSession } from "@/types";
 import { LoginFormFields } from "./LoginPage.types";
 
 export const LoginPage = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -22,7 +24,6 @@ export const LoginPage = () => {
   } = useForm<LoginFormFields>({
     mode: "onChange",
   });
-
   const dispatch = useAppDispatch();
 
   const onSubmit = async (data: LoginFormFields) => {
@@ -40,9 +41,6 @@ export const LoginPage = () => {
       dispatch(login(session as AuthSession));
     }
   };
-
-  const [isVisible, setIsVisible] = useState(false);
-
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
@@ -111,7 +109,10 @@ export const LoginPage = () => {
               <Checkbox defaultSelected size="sm" {...register("remember")}>
                 Remember me
               </Checkbox>
-              <Link className="text-default-500" to={FORGOT_PASSWORD_ROUTE}>
+              <Link
+                className="text-default-500"
+                to={ROUTES.FORGOT_PASSWORD_ROUTE}
+              >
                 Forgot password?
               </Link>
             </div>
@@ -132,7 +133,9 @@ export const LoginPage = () => {
             </Button>
           </form>
           <p className="text-small text-default-800 text-center hover:underline">
-            <Link to={SIGNUP_ROUTE}>Don&apos;t have account? Sign Up</Link>
+            <Link to={ROUTES.SIGNUP_ROUTE}>
+              Don&apos;t have account? Sign Up
+            </Link>
           </p>
         </div>
       </div>

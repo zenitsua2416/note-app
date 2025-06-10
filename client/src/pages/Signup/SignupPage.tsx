@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Button, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
 
-import { LOGIN_ROUTE } from "@/constants";
+import { ROUTES } from "@/constants";
 import { supabase } from "@/supabase";
 
 import { SignupFormFields } from "./SignupPage.types";
@@ -132,7 +132,7 @@ export const SignupPage = () => {
             </Button>
           </form>
           <p className="text-small text-default-800 text-center hover:underline">
-            <Link to={LOGIN_ROUTE}>Already have an account? Log In</Link>
+            <Link to={ROUTES.LOGIN_ROUTE}>Already have an account? Log In</Link>
           </p>
         </div>
       </div>
