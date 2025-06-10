@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { Switch, Button } from "@heroui/react";
 import { Sun, Moon } from "lucide-react";
 
-import { HOME_ROUTE, LOGIN_ROUTE } from "@/constants";
+import { ROUTES } from "@/constants";
 import { logout, selectIsLoggedIn, selectTheme, toggleTheme } from "@/features";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { Theme } from "@/types";
 import { saveToStorage } from "@/utils";
+
+const { HOME_ROUTE, LOGIN_ROUTE } = ROUTES;
 
 export const NavBar = () => {
   const dispatch = useAppDispatch();

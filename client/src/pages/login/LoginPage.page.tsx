@@ -2,45 +2,56 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
-import { Button, Input } from "@heroui/react";
+import { Button, Checkbox, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
 
-import { LOGIN_ROUTE } from "@/constants";
+import { ROUTES } from "@/constants";
+import { login } from "@/features";
+import { useAppDispatch, useDocTitle } from "@/hooks";
 import { supabase } from "@/supabase";
+import { AuthSession } from "@/types";
 
-import { SignupFormFields } from "./SignupPage.types";
+import { LoginFormFields } from "./LoginPage.types";
 
-export const SignupPage = () => {
+export const LoginPage = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { isSubmitting },
-  } = useForm<SignupFormFields>({
+    setError,
+    formState: { isSubmitting, errors },
+  } = useForm<LoginFormFields>({
     mode: "onChange",
   });
+  const dispatch = useAppDispatch();
+  const { setTitle } = useDocTitle();
 
-  const onSubmit = async (data: SignupFormFields) => {
-    const { data: res, error } = await supabase.auth.signUp({
+  setTitle("Login | Note App");
+
+  const onSubmit = async (data: LoginFormFields) => {
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signInWithPassword({
       email: data.email,
       password: data.password,
     });
 
-    console.log(res, error);
+    if (error) setError("root", { message: error.message });
+    else if (session) {
+      // success
+      dispatch(login(session as AuthSession));
+    }
   };
-
-  const [isVisible, setIsVisible] = useState(false);
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
-
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
 
   return (
     <div className="h-full">
       <div className="flex h-full w-full items-center justify-center">
         <div className="rounded-large flex w-full max-w-sm flex-col gap-4 px-8 pb-10 pt-6">
-          <p className="pb-4 text-left text-3xl font-semibold dark:text-slate-100">
-            Sign Up
+          <p className="text-default-800 pb-4 text-left text-3xl font-semibold">
+            Log In
             <span aria-label="emoji" className="ml-2" role="img">
               👋
             </span>
@@ -57,6 +68,7 @@ export const SignupPage = () => {
               placeholder="Enter your email"
               type="email"
               variant="bordered"
+              errorMessage={errors.email?.message}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -65,7 +77,7 @@ export const SignupPage = () => {
                 },
               })}
               classNames={{
-                input: "dark:text-white",
+                input: "text-default-700",
               }}
             />
             <Input
@@ -75,6 +87,7 @@ export const SignupPage = () => {
               placeholder="Enter your password"
               type={isVisible ? "text" : "password"}
               variant="bordered"
+              errorMessage={errors.password?.message}
               {...register("password", {
                 required: "Password is required",
                 minLength: {
@@ -85,54 +98,47 @@ export const SignupPage = () => {
               endContent={
                 <button type="button" onClick={toggleVisibility}>
                   {isVisible ? (
-                    <EyeClosed className="dark:text-white" />
+                    <EyeClosed className="text-default-500" />
                   ) : (
-                    <Eye className="dark:text-white" />
+                    <Eye className="text-default-500" />
                   )}
                 </button>
               }
               classNames={{
-                input: "dark:text-white",
+                input: "text-default-700",
               }}
             />
-            <Input
-              isRequired
-              label="Confirm Password"
-              labelPlacement="outside"
-              placeholder="Confirm your password"
-              type={isConfirmVisible ? "text" : "password"}
-              variant="bordered"
-              {...register("confirmPassword", {
-                required: "Confirm password is required",
-                validate: (value) =>
-                  value ===
-                  (watch("password") || "Confirm password is required"),
-              })}
-              endContent={
-                <button type="button" onClick={toggleConfirmVisibility}>
-                  {isConfirmVisible ? (
-                    <EyeClosed className="dark:text-white" />
-                  ) : (
-                    <Eye className="dark:text-white" />
-                  )}
-                </button>
-              }
-              classNames={{
-                input: "dark:text-white",
-              }}
-            />
+            <div className="flex w-full items-center justify-between px-1 pt-2">
+              <Checkbox defaultSelected size="sm" {...register("remember")}>
+                Remember me
+              </Checkbox>
+              <Link
+                className="text-default-500"
+                to={ROUTES.FORGOT_PASSWORD_ROUTE}
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            {errors.root && (
+              <p className="text-small text-danger-500 text-center">
+                {errors.root.message}
+              </p>
+            )}
 
             <Button
+              isLoading={isSubmitting}
               color="primary"
               type="submit"
-              isLoading={isSubmitting}
               className="mt-4"
             >
-              Sign Up
+              Log In
             </Button>
           </form>
           <p className="text-small text-default-800 text-center hover:underline">
-            <Link to={LOGIN_ROUTE}>Already have an account? Log In</Link>
+            <Link to={ROUTES.SIGNUP_ROUTE}>
+              Don&apos;t have account? Sign Up
+            </Link>
           </p>
         </div>
       </div>

@@ -1,1 +1,1 @@
-export { Each } from "./Each";
+export { Each } from "./Each.component";

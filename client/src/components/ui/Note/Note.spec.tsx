@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import { NOTE_ROUTE } from "@/constants";
 import { Note as INote } from "@/types";
 
-import { Note } from "./Note";
+import { Note } from "./Note.component";
 
 describe("Note Component", () => {
   const mockNote: INote = {

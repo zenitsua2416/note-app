@@ -5,9 +5,9 @@ import { Button } from "@heroui/react";
 import { PlusIcon } from "lucide-react";
 
 import { NoteGrid } from "@/components/ui";
-import { NEW_NOTE_ROUTE } from "@/constants";
+import { ROUTES } from "@/constants";
 import { addNotes, selectNotes } from "@/features";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector, useDocTitle } from "@/hooks";
 import { supabase } from "@/supabase";
 import { Note as INote } from "@/types";
 import { saveToStorage } from "@/utils";
@@ -15,6 +15,9 @@ import { saveToStorage } from "@/utils";
 export const HomePage = () => {
   const dispatch = useAppDispatch();
   const notes = useAppSelector(selectNotes);
+  const { setTitle } = useDocTitle();
+
+  setTitle("Home");
 
   useEffect(() => {
     (async () => {
@@ -40,7 +43,7 @@ export const HomePage = () => {
           endChild={
             <Button
               as={Link}
-              to={NEW_NOTE_ROUTE}
+              to={ROUTES.NEW_NOTE_ROUTE}
               variant="ghost"
               color="danger"
               startContent={<PlusIcon />}

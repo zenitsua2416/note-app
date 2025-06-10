@@ -1,1 +1,1 @@
-export { NoteGrid } from "./NoteGrid";
+export { NoteGrid } from "./NoteGrid.component";

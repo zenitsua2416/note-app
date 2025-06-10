@@ -2,55 +2,49 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
-import { Button, Checkbox, Input } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
 
-import { FORGOT_PASSWORD_ROUTE, SIGNUP_ROUTE } from "@/constants";
-import { login } from "@/features";
-import { useAppDispatch } from "@/hooks";
+import { ROUTES } from "@/constants";
+import { useDocTitle } from "@/hooks";
 import { supabase } from "@/supabase";
-import { AuthSession } from "@/types";
 
-import { LoginFormFields } from "./LoginPage.types";
+import { SignupFormFields } from "./Signup.types";
 
-export const LoginPage = () => {
+export const SignupPage = () => {
   const {
     register,
     handleSubmit,
-    setError,
-    formState: { isSubmitting, errors },
-  } = useForm<LoginFormFields>({
+    watch,
+    formState: { isSubmitting },
+  } = useForm<SignupFormFields>({
     mode: "onChange",
   });
+  const { setTitle } = useDocTitle();
 
-  const dispatch = useAppDispatch();
+  setTitle("Signup | Note App");
 
-  const onSubmit = async (data: LoginFormFields) => {
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signInWithPassword({
+  const onSubmit = async (data: SignupFormFields) => {
+    const { data: res, error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
     });
 
-    if (error) setError("root", { message: error.message });
-    else if (session) {
-      // success
-      dispatch(login(session as AuthSession));
-    }
+    console.log(res, error);
   };
 
   const [isVisible, setIsVisible] = useState(false);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
 
   return (
     <div className="h-full">
       <div className="flex h-full w-full items-center justify-center">
         <div className="rounded-large flex w-full max-w-sm flex-col gap-4 px-8 pb-10 pt-6">
-          <p className="text-default-800 pb-4 text-left text-3xl font-semibold">
-            Log In
+          <p className="pb-4 text-left text-3xl font-semibold dark:text-slate-100">
+            Sign Up
             <span aria-label="emoji" className="ml-2" role="img">
               👋
             </span>
@@ -67,7 +61,6 @@ export const LoginPage = () => {
               placeholder="Enter your email"
               type="email"
               variant="bordered"
-              errorMessage={errors.email?.message}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -76,7 +69,7 @@ export const LoginPage = () => {
                 },
               })}
               classNames={{
-                input: "text-default-700",
+                input: "dark:text-white",
               }}
             />
             <Input
@@ -86,7 +79,6 @@ export const LoginPage = () => {
               placeholder="Enter your password"
               type={isVisible ? "text" : "password"}
               variant="bordered"
-              errorMessage={errors.password?.message}
               {...register("password", {
                 required: "Password is required",
                 minLength: {
@@ -97,42 +89,54 @@ export const LoginPage = () => {
               endContent={
                 <button type="button" onClick={toggleVisibility}>
                   {isVisible ? (
-                    <EyeClosed className="text-default-500" />
+                    <EyeClosed className="dark:text-white" />
                   ) : (
-                    <Eye className="text-default-500" />
+                    <Eye className="dark:text-white" />
                   )}
                 </button>
               }
               classNames={{
-                input: "text-default-700",
+                input: "dark:text-white",
               }}
             />
-            <div className="flex w-full items-center justify-between px-1 pt-2">
-              <Checkbox defaultSelected size="sm" {...register("remember")}>
-                Remember me
-              </Checkbox>
-              <Link className="text-default-500" to={FORGOT_PASSWORD_ROUTE}>
-                Forgot password?
-              </Link>
-            </div>
-
-            {errors.root && (
-              <p className="text-small text-danger-500 text-center">
-                {errors.root.message}
-              </p>
-            )}
+            <Input
+              isRequired
+              label="Confirm Password"
+              labelPlacement="outside"
+              placeholder="Confirm your password"
+              type={isConfirmVisible ? "text" : "password"}
+              variant="bordered"
+              {...register("confirmPassword", {
+                required: "Confirm password is required",
+                validate: (value) =>
+                  value ===
+                  (watch("password") || "Confirm password is required"),
+              })}
+              endContent={
+                <button type="button" onClick={toggleConfirmVisibility}>
+                  {isConfirmVisible ? (
+                    <EyeClosed className="dark:text-white" />
+                  ) : (
+                    <Eye className="dark:text-white" />
+                  )}
+                </button>
+              }
+              classNames={{
+                input: "dark:text-white",
+              }}
+            />
 
             <Button
-              isLoading={isSubmitting}
               color="primary"
               type="submit"
+              isLoading={isSubmitting}
               className="mt-4"
             >
-              Log In
+              Sign Up
             </Button>
           </form>
           <p className="text-small text-default-800 text-center hover:underline">
-            <Link to={SIGNUP_ROUTE}>Don&apos;t have account? Sign Up</Link>
+            <Link to={ROUTES.LOGIN_ROUTE}>Already have an account? Log In</Link>
           </p>
         </div>
       </div>
