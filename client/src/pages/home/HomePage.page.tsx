@@ -7,7 +7,7 @@ import { PlusIcon } from "lucide-react";
 import { NoteGrid } from "@/components/ui";
 import { ROUTES } from "@/constants";
 import { addNotes, selectNotes } from "@/features";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector, useDocTitle } from "@/hooks";
 import { supabase } from "@/supabase";
 import { Note as INote } from "@/types";
 import { saveToStorage } from "@/utils";
@@ -15,6 +15,9 @@ import { saveToStorage } from "@/utils";
 export const HomePage = () => {
   const dispatch = useAppDispatch();
   const notes = useAppSelector(selectNotes);
+  const { setTitle } = useDocTitle();
+
+  setTitle("Home");
 
   useEffect(() => {
     (async () => {

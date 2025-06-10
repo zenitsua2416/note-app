@@ -6,6 +6,7 @@ import { Button, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
 
 import { ROUTES } from "@/constants";
+import { useDocTitle } from "@/hooks";
 import { supabase } from "@/supabase";
 
 import { SignupFormFields } from "./Signup.types";
@@ -19,6 +20,9 @@ export const SignupPage = () => {
   } = useForm<SignupFormFields>({
     mode: "onChange",
   });
+  const { setTitle } = useDocTitle();
+
+  setTitle("Signup | Note App");
 
   const onSubmit = async (data: SignupFormFields) => {
     const { data: res, error } = await supabase.auth.signUp({
