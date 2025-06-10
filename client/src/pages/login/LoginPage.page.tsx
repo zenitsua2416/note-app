@@ -7,7 +7,7 @@ import { Eye, EyeClosed } from "lucide-react";
 
 import { ROUTES } from "@/constants";
 import { login } from "@/features";
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch, useDocTitle } from "@/hooks";
 import { supabase } from "@/supabase";
 import { AuthSession } from "@/types";
 
@@ -25,6 +25,9 @@ export const LoginPage = () => {
     mode: "onChange",
   });
   const dispatch = useAppDispatch();
+  const { setTitle } = useDocTitle();
+
+  setTitle("Login | Note App");
 
   const onSubmit = async (data: LoginFormFields) => {
     const {

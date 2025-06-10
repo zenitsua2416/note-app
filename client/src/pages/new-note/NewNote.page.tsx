@@ -6,7 +6,7 @@ import { FilePlus2 } from "lucide-react";
 
 import { ROUTES } from "@/constants";
 import { addNotes, selectAuthUser } from "@/features";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch, useAppSelector, useDocTitle } from "@/hooks";
 import { supabase } from "@/supabase";
 
 import { NewNoteFormData } from "./NewNote.types";
@@ -16,14 +16,15 @@ const { NOTE_ROUTE } = ROUTES;
 export const NewNotePage = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectAuthUser);
-
+  const { setTitle } = useDocTitle();
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<NewNoteFormData>();
+
+  setTitle("New Note | Note App");
 
   const onSubmit: SubmitHandler<NewNoteFormData> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
