@@ -8,7 +8,7 @@ import { LOGIN_ROUTE } from "@/constants";
 import { logout, toggleTheme } from "@/features";
 import * as hooks from "@/hooks";
 
-import { NavBar } from "./NavBar";
+import { NavBar } from "./NavBar.component";
 
 vi.mock("@/hooks", async () => {
   const actual = vi.importActual<typeof import("@/hooks")>("@/hooks");

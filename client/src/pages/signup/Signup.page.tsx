@@ -8,7 +8,7 @@ import { Eye, EyeClosed } from "lucide-react";
 import { ROUTES } from "@/constants";
 import { supabase } from "@/supabase";
 
-import { SignupFormFields } from "./SignupPage.types";
+import { SignupFormFields } from "./Signup.types";
 
 export const SignupPage = () => {
   const {

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { Each } from "./Each";
+import { Each } from "./Each.component";
 
 describe("Each component", () => {
   it("renders a list of items using the render function", () => {

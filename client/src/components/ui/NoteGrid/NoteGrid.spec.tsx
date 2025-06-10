@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 
 import { Note as INote } from "@/types";
 
-import { NoteGrid } from "./NoteGrid";
+import { NoteGrid } from "./NoteGrid.component";
 
 // Mock the Note component
 vi.mock("@/components/ui", () => ({
