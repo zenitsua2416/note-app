@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
-import { LOGIN_ROUTE } from "@/constants";
+import { ROUTES } from "@/constants";
 import { logout, toggleTheme } from "@/features";
 import * as hooks from "@/hooks";
 
@@ -58,7 +58,7 @@ describe("NavBar", () => {
 
     const loginBtn = screen.getByRole("link", { name: /login/i });
     expect(loginBtn).toBeInTheDocument();
-    expect(loginBtn).toHaveAttribute("href", LOGIN_ROUTE);
+    expect(loginBtn).toHaveAttribute("href", ROUTES.LOGIN_ROUTE);
   });
 
   it("should render logout button if user is logged in", () => {
