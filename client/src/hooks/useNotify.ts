@@ -24,6 +24,8 @@ export const useNotify = () => {
    * @param payload.redirectTo - Optional route path to navigate to after the toast is shown.
    * @param payload.redirectDelay - Optional delay (in ms) before navigation occurs. Defaults to `2000`.
    * @param payload.action - Optional action object to render a button inside the toast.
+   * @param payload.onAutoClose - Optional callback function to execute when the toast is automatically closed.
+   * @param payload.onDismiss - Optional callback function to execute when the toast is dismissed.
    */
   const notify = (payload: NotifyPayload) => {
     const {
