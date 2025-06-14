@@ -1,31 +1,58 @@
+import { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import { Button, Input } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import { ROUTES } from "@/constants";
-
-import { ForgotPasswordFields } from "./ForgotPassword.types";
 import { supabase } from "@/supabase";
 import { getEnv } from "@/utils";
-import { useCallback } from "react";
+import { useNotify } from "@/hooks";
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Please enter a valid email address."),
+});
+
+type ForgotPasswordFields = z.infer<typeof forgotPasswordSchema>;
 
 export const ForgotPasswordContainer = () => {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, errors, touchedFields },
   } = useForm<ForgotPasswordFields>({
-    mode: "onChange",
+    mode: "onTouched",
+    resolver: zodResolver(forgotPasswordSchema),
   });
+  const notify = useNotify();
 
-  const onSubmit = useCallback(async (data: ForgotPasswordFields) => {
-    const { email } = data;
-    const appUrl = getEnv("VITE_APP_URL");
-    await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${appUrl}/reset-password`,
-    });
-  }, []);
+  const onSubmit = useCallback(
+    async (data: ForgotPasswordFields) => {
+      const { email } = data;
+      const appUrl = getEnv("VITE_APP_URL");
+
+      try {
+        await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${appUrl}/reset-password`,
+        });
+        notify({
+          title: "Reset password email sent!",
+          description:
+            "Please check your email for a link to reset your password.",
+          type: "success",
+        });
+      } catch (error) {
+        notify({
+          title: "Something went wrong. Please try again.",
+          type: "error",
+        });
+        console.error(error);
+      }
+    },
+    [notify],
+  );
 
   return (
     <div className="h-full">
@@ -49,14 +76,9 @@ export const ForgotPasswordContainer = () => {
               placeholder="Enter your email"
               type="email"
               variant="bordered"
+              isInvalid={!!touchedFields.email && !!errors.email}
               errorMessage={errors.email?.message}
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              })}
+              {...register("email")}
               classNames={{
                 input: "text-default-700",
               }}
