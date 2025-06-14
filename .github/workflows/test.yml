@@ -25,7 +25,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 🔨 Install pnpm
-        run: npm install -g pnpm
+        run: corepack enable && corepack prepare pnpm@latest --activate
 
       - name: 📦 Install dependencies
         run: pnpm install
