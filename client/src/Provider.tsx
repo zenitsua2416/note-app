@@ -1,20 +1,21 @@
 import { ReactNode } from "react";
 import { Provider as StoreProvider } from "react-redux";
-import { ToastContainer } from "react-toastify";
 
+import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/system";
 
 import { store } from "@/store";
 
 const Provider = ({ children }: { children: ReactNode }) => (
   <HeroUIProvider>
-    <ToastContainer
+    <Toaster
+      richColors
+      closeButton
       position="top-right"
-      className="top-16"
-      pauseOnHover
-      stacked
-      autoClose={3000}
-      theme="colored"
+      offset={{
+        top: 60,
+        right: 20,
+      }}
     />
     <StoreProvider store={store}>{children}</StoreProvider>
   </HeroUIProvider>
