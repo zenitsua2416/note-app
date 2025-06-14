@@ -16,6 +16,7 @@ const Provider = ({ children }: { children: ReactNode }) => (
         top: 60,
         right: 20,
       }}
+      theme="system"
     />
     <StoreProvider store={store}>{children}</StoreProvider>
   </HeroUIProvider>

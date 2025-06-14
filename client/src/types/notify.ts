@@ -9,4 +9,6 @@ export interface NotifyPayload {
   redirectTo?: string;
   redirectDelay?: number;
   action?: Action;
+  onAutoClose?: () => void;
+  onDismiss?: () => void;
 }

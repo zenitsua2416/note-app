@@ -34,6 +34,8 @@ export const useNotify = () => {
       redirectTo,
       redirectDelay = 2000,
       action,
+      onAutoClose,
+      onDismiss,
     } = payload;
 
     // Display toast using appropriate variant
@@ -42,6 +44,8 @@ export const useNotify = () => {
         description,
         duration,
         action,
+        onAutoClose,
+        onDismiss,
       });
     } else {
       const { success, error, info, warning } = toast;
@@ -57,6 +61,8 @@ export const useNotify = () => {
         description,
         duration,
         action,
+        onAutoClose,
+        onDismiss,
       });
     }
 
