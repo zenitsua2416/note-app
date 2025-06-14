@@ -1,0 +1,6 @@
+/* TEAM */
+Lead Frontend Developer: Zenitsu Agatsuma (@zenitsua2416)
+Code Reviewer: Krishna Modepalli (@krishnamodepalli)
+
+/* TECHNOLOGY */
+Built with: React, Tailwindcss, Vite, Supabase

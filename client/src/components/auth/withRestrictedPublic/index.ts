@@ -1,0 +1,1 @@
+export { withRestrictedPublic } from "./withRestrictedPublic";

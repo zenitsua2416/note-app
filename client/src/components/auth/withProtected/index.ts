@@ -1,0 +1,1 @@
+export { withProtected } from "./withProtected";
