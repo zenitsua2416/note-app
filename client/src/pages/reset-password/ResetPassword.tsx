@@ -1,49 +1,52 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
+import debounce from "lodash.debounce";
 
-import { ROUTES } from "@/constants";
 import { useDocTitle } from "@/hooks";
 import { supabase } from "@/supabase";
 
-import { SignupFormFields } from "./Signup.types";
+import { ResetPasswordFields } from "./ResetPassword.types";
 
-export const SignupPage = () => {
+export const ResetPasswordPage = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+
   const {
     register,
     handleSubmit,
     watch,
     setError,
     formState: { isSubmitting, errors },
-  } = useForm<SignupFormFields>({
+  } = useForm<ResetPasswordFields>({
     mode: "onChange",
   });
   const { setTitle } = useDocTitle();
 
-  setTitle("Signup | Note App");
+  setTitle("Reset Password | Note App");
+  const onSubmitHandler = useCallback(
+    async (data: ResetPasswordFields) => {
+      const { password, confirmPassword } = data;
 
-  const onSubmit = async (data: SignupFormFields) => {
-    const { email, password, confirmPassword } = data;
+      if (password !== confirmPassword) {
+        setError("confirmPassword", {
+          type: "manual",
+          message: "Passwords do not match",
+        });
+        return;
+      }
 
-    if (password !== confirmPassword) {
-      setError("root", {
-        message: "Passwords do not match",
-      });
-    }
+      await supabase.auth.updateUser({ password });
+    },
+    [setError],
+  );
 
-    const { data: res, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    console.log(res, error);
-  };
-
-  const [isVisible, setIsVisible] = useState(false);
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const debouncedSubmit = useCallback(
+    debounce(onSubmitHandler, 1500, { leading: true, trailing: false }),
+    [],
+  );
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
@@ -53,44 +56,23 @@ export const SignupPage = () => {
       <div className="flex h-full w-full items-center justify-center">
         <div className="rounded-large flex w-full max-w-sm flex-col gap-4 px-8 pb-10 pt-6">
           <p className="pb-4 text-left text-3xl font-semibold dark:text-slate-100">
-            Sign Up
+            Reset Password
             <span aria-label="emoji" className="ml-2" role="img">
-              👋
+              🗝️
             </span>
           </p>
 
           <form
             className="flex flex-col gap-4"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(debouncedSubmit)}
           >
             <Input
               isRequired
-              label="Email"
-              labelPlacement="outside"
-              placeholder="Enter your email"
-              type="email"
-              variant="bordered"
-              isInvalid={!!errors.email}
-              errorMessage={errors.email?.message}
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              })}
-              classNames={{
-                input: "dark:text-white",
-              }}
-            />
-            <Input
-              isRequired
-              label="Password"
+              label="New Password"
               labelPlacement="outside"
               placeholder="Enter your password"
               type={isVisible ? "text" : "password"}
               variant="bordered"
-              isInvalid={!!errors.password}
               errorMessage={errors.password?.message}
               {...register("password", {
                 required: "Password is required",
@@ -146,12 +128,9 @@ export const SignupPage = () => {
               isLoading={isSubmitting}
               className="mt-4"
             >
-              Sign Up
+              Reset Password
             </Button>
           </form>
-          <p className="text-small text-default-800 text-center hover:underline">
-            <Link to={ROUTES.LOGIN_ROUTE}>Already have an account? Log In</Link>
-          </p>
         </div>
       </div>
     </div>

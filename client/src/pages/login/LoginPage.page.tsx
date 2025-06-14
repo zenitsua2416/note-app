@@ -68,6 +68,7 @@ export const LoginPage = () => {
               placeholder="Enter your email"
               type="email"
               variant="bordered"
+              isInvalid={!!errors.email}
               errorMessage={errors.email?.message}
               {...register("email", {
                 required: "Email is required",
@@ -87,6 +88,7 @@ export const LoginPage = () => {
               placeholder="Enter your password"
               type={isVisible ? "text" : "password"}
               variant="bordered"
+              isInvalid={!!errors.password}
               errorMessage={errors.password?.message}
               {...register("password", {
                 required: "Password is required",
