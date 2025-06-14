@@ -1,0 +1,4 @@
+Contact: mailto:zenitsua2416@gmail.com
+Encryption: https://example.com/pgp-key.txt
+Preferred-Languages: en
+Expires: 2027-06-14

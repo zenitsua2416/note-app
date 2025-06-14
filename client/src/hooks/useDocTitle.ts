@@ -1,5 +1,5 @@
 export const useDocTitle = () => {
-  const setTitle = (newTitle) => {
+  const setTitle = (newTitle: string) => {
     document.title = newTitle;
   };
 

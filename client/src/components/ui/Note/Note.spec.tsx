@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
-import { NOTE_ROUTE } from "@/constants";
+import { ROUTES } from "@/constants";
 import { Note as INote } from "@/types";
 
 import { Note } from "./Note.component";
@@ -27,7 +27,7 @@ describe("Note Component", () => {
 
     // Check that the link has the correct href
     const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", NOTE_ROUTE(mockNote.id));
+    expect(link).toHaveAttribute("href", ROUTES.NOTE_ROUTE(mockNote.id));
   });
 
   it("renders the description", () => {

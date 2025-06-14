@@ -12,19 +12,24 @@ import { useAppDispatch, useNotify } from "@/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { logout } from "@/features";
 
-const resetPasswordSchema = z.object({
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(
-      /[^a-zA-Z0-9]/,
-      "Password must contain at least one special character",
-    ),
-  confirmPassword: z.string(),
-});
+const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number")
+      .regex(
+        /[^a-zA-Z0-9]/,
+        "Password must contain at least one special character",
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type ResetPasswordFields = z.infer<typeof resetPasswordSchema>;
 
@@ -38,7 +43,6 @@ export const ResetPasswordContainer = () => {
   const {
     register,
     handleSubmit,
-    watch,
     setError,
     formState: { touchedFields, errors },
   } = useForm<ResetPasswordFields>({
@@ -129,10 +133,7 @@ export const ResetPasswordContainer = () => {
               variant="bordered"
               isInvalid={!!errors.confirmPassword}
               errorMessage={errors.confirmPassword?.message}
-              {...register("confirmPassword", {
-                validate: (value) =>
-                  value === watch("password") || "Passwords do not match",
-              })}
+              {...register("confirmPassword")}
               endContent={
                 <button type="button" onClick={toggleConfirmVisibility}>
                   {isConfirmVisible ? (
