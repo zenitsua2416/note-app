@@ -2,18 +2,22 @@ import { createBrowserRouter } from "react-router-dom";
 import { withProtected, withRestrictedPublic } from "@/components/auth";
 import { DefaultLayout } from "@/layouts";
 import {
+  ForgotPasswordPage,
   HomePage,
   LoginPage,
   NewNotePage,
   NotFoundPage,
   NotePage,
+  ResetPasswordPage,
   SignupPage,
 } from "@/pages";
 
+const ForgotPassword = withRestrictedPublic(ForgotPasswordPage);
 const Home = withProtected(HomePage);
 const NewNote = withProtected(NewNotePage);
 const Note = withProtected(NotePage);
 const Login = withRestrictedPublic(LoginPage);
+const ResetPassword = withRestrictedPublic(ResetPasswordPage);
 const Signup = withRestrictedPublic(SignupPage);
 
 /**
@@ -35,6 +39,14 @@ export const router = createBrowserRouter([
       {
         path: "signup",
         element: <Signup />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPassword />,
       },
       {
         path: "note",

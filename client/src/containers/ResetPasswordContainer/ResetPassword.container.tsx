@@ -1,49 +1,83 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button, Input } from "@heroui/react";
 import { Eye, EyeClosed } from "lucide-react";
+import debounce from "lodash.debounce";
+import { z } from "zod";
 
-import { ROUTES } from "@/constants";
-import { useDocTitle } from "@/hooks";
 import { supabase } from "@/supabase";
 
-import { SignupFormFields } from "./Signup.types";
+import { useAppDispatch, useNotify } from "@/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { logout } from "@/features";
 
-export const SignupPage = () => {
+const resetPasswordSchema = z.object({
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(
+      /[^a-zA-Z0-9]/,
+      "Password must contain at least one special character",
+    ),
+  confirmPassword: z.string(),
+});
+
+type ResetPasswordFields = z.infer<typeof resetPasswordSchema>;
+
+export const ResetPasswordContainer = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+
+  const dispatch = useAppDispatch();
+
   const {
     register,
     handleSubmit,
     watch,
     setError,
-    formState: { isSubmitting, errors },
-  } = useForm<SignupFormFields>({
+    formState: { touchedFields, errors },
+  } = useForm<ResetPasswordFields>({
     mode: "onChange",
+    resolver: zodResolver(resetPasswordSchema),
   });
-  const { setTitle } = useDocTitle();
+  const notify = useNotify();
 
-  setTitle("Signup | Note App");
+  const onSubmitHandler = useCallback(
+    async (data: ResetPasswordFields) => {
+      console.log("calling");
+      setIsSubmitting(true);
+      const { password } = data;
 
-  const onSubmit = async (data: SignupFormFields) => {
-    const { email, password, confirmPassword } = data;
-
-    if (password !== confirmPassword) {
-      setError("root", {
-        message: "Passwords do not match",
+      const { error } = await supabase.auth.updateUser({
+        password,
       });
-    }
 
-    const { data: res, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
+      if (error) {
+        setError("root", { message: error.message });
+      } else {
+        notify({
+          title: "Successfully changed the password",
+          description: "",
+          type: "success",
+        });
 
-    console.log(res, error);
-  };
+        // At this point, supabase will automatically logs in the user, but we want to log out the user
+        dispatch(logout());
+      }
+      setIsSubmitting(false);
+    },
+    [setError, notify, dispatch],
+  );
 
-  const [isVisible, setIsVisible] = useState(false);
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const debouncedSubmit = useCallback(
+    debounce(onSubmitHandler, 1500, { leading: true, trailing: false }),
+    [],
+  );
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
@@ -53,52 +87,26 @@ export const SignupPage = () => {
       <div className="flex h-full w-full items-center justify-center">
         <div className="rounded-large flex w-full max-w-sm flex-col gap-4 px-8 pb-10 pt-6">
           <p className="pb-4 text-left text-3xl font-semibold dark:text-slate-100">
-            Sign Up
+            Reset Password
             <span aria-label="emoji" className="ml-2" role="img">
-              👋
+              🗝️
             </span>
           </p>
 
           <form
             className="flex flex-col gap-4"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(debouncedSubmit)}
           >
             <Input
               isRequired
-              label="Email"
-              labelPlacement="outside"
-              placeholder="Enter your email"
-              type="email"
-              variant="bordered"
-              isInvalid={!!errors.email}
-              errorMessage={errors.email?.message}
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              })}
-              classNames={{
-                input: "dark:text-white",
-              }}
-            />
-            <Input
-              isRequired
-              label="Password"
+              label="New Password"
               labelPlacement="outside"
               placeholder="Enter your password"
               type={isVisible ? "text" : "password"}
               variant="bordered"
-              isInvalid={!!errors.password}
+              isInvalid={!!touchedFields.password && !!errors.password}
               errorMessage={errors.password?.message}
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
-                },
-              })}
+              {...register("password")}
               endContent={
                 <button type="button" onClick={toggleVisibility}>
                   {isVisible ? (
@@ -122,7 +130,6 @@ export const SignupPage = () => {
               isInvalid={!!errors.confirmPassword}
               errorMessage={errors.confirmPassword?.message}
               {...register("confirmPassword", {
-                required: "Confirm password is required",
                 validate: (value) =>
                   value === watch("password") || "Passwords do not match",
               })}
@@ -139,6 +146,11 @@ export const SignupPage = () => {
                 input: "dark:text-white",
               }}
             />
+            {errors.root && (
+              <p className="text-danger-500 text-small text-center">
+                {errors.root.message}
+              </p>
+            )}
 
             <Button
               color="primary"
@@ -146,12 +158,9 @@ export const SignupPage = () => {
               isLoading={isSubmitting}
               className="mt-4"
             >
-              Sign Up
+              Reset Password
             </Button>
           </form>
-          <p className="text-small text-default-800 text-center hover:underline">
-            <Link to={ROUTES.LOGIN_ROUTE}>Already have an account? Log In</Link>
-          </p>
         </div>
       </div>
     </div>
