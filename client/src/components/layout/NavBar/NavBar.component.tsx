@@ -1,6 +1,15 @@
 import { Link } from "react-router-dom";
 
-import { Switch, Button } from "@heroui/react";
+import {
+  Switch,
+  Button,
+  Modal,
+  ModalContent,
+  useDisclosure,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/react";
 import { Sun, Moon } from "lucide-react";
 
 import { ROUTES } from "@/constants";
@@ -12,10 +21,9 @@ import { saveToStorage } from "@/utils";
 const { HOME_ROUTE, LOGIN_ROUTE } = ROUTES;
 
 export const NavBar = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
-
   const { theme } = useAppSelector(selectTheme);
-
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   const handleToggleTheme = () => {
@@ -25,6 +33,7 @@ export const NavBar = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    onClose();
   };
 
   return (
@@ -47,7 +56,7 @@ export const NavBar = () => {
           />
 
           {isLoggedIn ? (
-            <Button variant="light" color="danger" onPress={handleLogout}>
+            <Button variant="light" color="danger" onPress={onOpen}>
               Logout
             </Button>
           ) : (
@@ -57,6 +66,31 @@ export const NavBar = () => {
           )}
         </div>
       </nav>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        backdrop="blur"
+        className="bg-neutral-100 dark:bg-neutral-800"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Are you sure?</ModalHeader>
+              <ModalBody>
+                <p>You will be logged out.</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button color="danger" variant="light" onPress={handleLogout}>
+                  Logout
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </header>
   );
 };
