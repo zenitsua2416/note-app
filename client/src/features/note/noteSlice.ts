@@ -1,32 +1,32 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { Note, UUID } from "@/types";
-import { loadFromStorage } from "@/utils";
+import { Note, NoteStore, UUID } from "@/types";
+import { buildNoteStoreFromArray, loadFromStorage } from "@/utils";
 
-const initialState: Note[] = loadFromStorage<Note[]>("notes", []);
+const initialState: NoteStore = loadFromStorage<NoteStore>("notes", {});
 
 export const noteSlice = createSlice({
   name: "notes",
   initialState,
   reducers: {
-    addNotes: (state, action: PayloadAction<Note[]>) =>
-      Array.from(
-        new Map(
-          [...state, ...action.payload].map((note) => [note.id, note]),
-        ).values(),
-      ),
+    addNotes: (state, action: PayloadAction<Note[]>) => ({
+      ...state,
+      ...buildNoteStoreFromArray(action.payload),
+    }),
 
-    removeNote: (state, action: PayloadAction<UUID>) =>
-      state.filter((note) => note.id !== action.payload),
+    removeNote: (state, action: PayloadAction<UUID>) => {
+      delete state[action.payload];
+      return state;
+    },
 
     updateNote: (state, action: PayloadAction<Note>) => {
-      const index = state.findIndex((note) => note.id === action.payload.id);
-      state[index] = action.payload;
+      state[action.payload.id] = action.payload;
+      return state;
     },
   },
 });
 
-export const selectNotes = (state: { notes: Note[] }) => state.notes;
+export const selectNotes = (state: { notes: NoteStore }) => state.notes;
 
 export const { addNotes, removeNote, updateNote } = noteSlice.actions;
 export const { reducer: noteReducer } = noteSlice;

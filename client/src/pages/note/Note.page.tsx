@@ -2,18 +2,19 @@ import { useParams } from "react-router-dom";
 
 import { useDocTitle } from "@/hooks";
 import { NoteNotFoundPage } from "@/pages";
-import { Note } from "@/types";
+import { NoteStore } from "@/types";
 import { loadFromStorage } from "@/utils";
 
 export const NotePage = () => {
   const { id } = useParams();
   const { setTitle } = useDocTitle();
 
-  const notes = loadFromStorage<Note[]>("notes", []);
+  const noteStore = loadFromStorage<NoteStore>("notes", {});
 
-  if (!notes) return <div>Loading...</div>;
+  if (!id) return <div>Something went wrong...</div>;
+  if (!noteStore) return <div>Loading...</div>;
+  const note = noteStore[id];
 
-  const note = notes?.find((note) => note.id === id);
   if (!note) return <NoteNotFoundPage />;
 
   setTitle(note.title);

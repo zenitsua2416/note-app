@@ -9,19 +9,20 @@ import { ROUTES } from "@/constants";
 import { addNotes, selectNotes } from "@/features";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { supabase } from "@/supabase";
-import { Note as INote } from "@/types";
-import { saveToStorage } from "@/utils";
+import { NoteStore } from "@/types";
+import { buildNoteStoreFromArray, saveToStorage } from "@/utils";
 
 export const NoteListContainer = () => {
   const dispatch = useAppDispatch();
-  const notes = useAppSelector(selectNotes);
+  const noteStore = useAppSelector(selectNotes);
+  const notes = Object.values(noteStore);
 
   useEffect(() => {
     (async () => {
       const { data: notes } = await supabase.from("note").select("*");
       if (!notes) return;
 
-      saveToStorage<INote[]>("notes", notes);
+      saveToStorage<NoteStore>("notes", buildNoteStoreFromArray(notes));
       dispatch(addNotes(notes));
     })();
   }, [dispatch]);
