@@ -20,7 +20,7 @@ import { ROUTES, THEME } from "@/constants";
 
 import { NavBarProps } from "./NavBar.types";
 
-const { HOME_ROUTE, LOGIN_ROUTE } = ROUTES;
+const { ACCOUNT_ROUTE, HOME_ROUTE, LOGIN_ROUTE } = ROUTES;
 
 export const NavBar = ({
   theme,
@@ -73,7 +73,7 @@ export const NavBar = ({
               </DropdownItem>
               {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
               {/* @ts-ignore */}
-              <DropdownItem key="account" as={Link} to="/account">
+              <DropdownItem key="account" as={Link} to={ACCOUNT_ROUTE}>
                 Account
               </DropdownItem>
               <DropdownItem
