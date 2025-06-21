@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import {
   Avatar,
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Modal,
   ModalBody,
   ModalContent,
@@ -25,7 +29,7 @@ export const NavBar = ({
   isConfirmModalOpen,
   onToggleTheme,
   onLogout,
-  // onOpenConfirmModal,      //  TODO: Implement this
+  onOpenConfirmModal,
   onCloseConfirmModal,
 }: NavBarProps) => (
   <header className="sticky top-0 w-full border shadow-md backdrop-blur-md dark:border-neutral-800">
@@ -47,13 +51,40 @@ export const NavBar = ({
         />
 
         {isLoggedIn ? (
-          <Button isIconOnly radius="full">
-            <Avatar
-              src={userProfile?.avatar_url || undefined}
-              name={userProfile?.full_name || userProfile.email}
-              showFallback
-            />
-          </Button>
+          <Dropdown
+            className="text-default-900 bg-neutral-800"
+            placement="bottom-end"
+          >
+            <DropdownTrigger>
+              <Button isIconOnly radius="full">
+                <Avatar
+                  src={userProfile?.avatar_url || undefined}
+                  name={userProfile?.full_name || userProfile.email}
+                  showFallback
+                />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu variant="flat">
+              <DropdownItem key="profile">
+                {userProfile.full_name && (
+                  <p className="font-semibold">{userProfile.full_name}</p>
+                )}
+                <p>{userProfile.email}</p>
+              </DropdownItem>
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-ignore */}
+              <DropdownItem key="account" as={Link} to="/account">
+                Account
+              </DropdownItem>
+              <DropdownItem
+                key="logout"
+                color="danger"
+                onClick={onOpenConfirmModal}
+              >
+                Logout
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         ) : (
           <Button as={Link} to={LOGIN_ROUTE} variant="light">
             Login
