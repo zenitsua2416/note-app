@@ -1,7 +1,8 @@
-import { Theme } from "@/types";
+import { Theme, UserProfile } from "@/types";
 
 export interface NavBarProps {
   theme: Theme;
+  userProfile: UserProfile;
   isLoggedIn: boolean;
   isConfirmModalOpen: boolean;
   onToggleTheme: () => void;
