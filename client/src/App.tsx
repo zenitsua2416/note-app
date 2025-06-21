@@ -2,12 +2,15 @@ import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 
 import { THEME } from "@/constants";
-import { selectTheme } from "@/features";
-import { useAppSelector } from "@/hooks";
+import { selectAuthUser, selectTheme, setUserProfile } from "@/features";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { supabase } from "@/supabase";
 import { router } from "@/routes";
 
 const App = () => {
+  const dispatch = useAppDispatch();
   const { theme } = useAppSelector(selectTheme);
+  const { id, email } = useAppSelector(selectAuthUser);
 
   /**
    * Adding the `dark` class to the <body> sets the dark theme globally,
@@ -21,6 +24,20 @@ const App = () => {
   useEffect(() => {
     document.body.classList.toggle("dark", theme === THEME.DARK);
   }, [theme]);
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase.from("user_profile").select("*");
+
+      if (error) {
+        console.error(error);
+        return;
+      } else {
+        const { id, user_id, full_name, avatar_url } = data[0];
+        dispatch(setUserProfile({ id, user_id, email, full_name, avatar_url }));
+      }
+    })();
+  }, [id, email, dispatch]);
 
   return <RouterProvider router={router} />;
 };

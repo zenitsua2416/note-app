@@ -2,7 +2,13 @@ import { useDisclosure } from "@heroui/react";
 
 import { STORAGE, THEME } from "@/constants";
 import { NavBar } from "@/components/layout";
-import { logout, selectIsLoggedIn, selectTheme, toggleTheme } from "@/features";
+import {
+  logout,
+  selectIsLoggedIn,
+  selectTheme,
+  selectUserProfile,
+  toggleTheme,
+} from "@/features";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { saveToStorage } from "@/utils";
 import { Theme } from "@/types";
@@ -12,6 +18,7 @@ export const NavBarContainer = () => {
   const dispatch = useAppDispatch();
   const { theme } = useAppSelector(selectTheme);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const userProfile = useAppSelector(selectUserProfile);
 
   const handleToggleTheme = () => {
     saveToStorage<Theme>(
@@ -28,6 +35,7 @@ export const NavBarContainer = () => {
 
   return (
     <NavBar
+      userProfile={userProfile}
       theme={theme}
       isLoggedIn={isLoggedIn}
       isConfirmModalOpen={isOpen}
