@@ -55,9 +55,11 @@ export const SignupContainer = () => {
     });
 
     if (error) {
-      setError("root", {
-        message: error.message,
-      });
+      if (error.status === 422)
+        setError("email", {
+          message: "An account already exists with this email!!",
+        });
+      else setError("root", { message: error.message });
     }
   };
 
@@ -139,6 +141,11 @@ export const SignupContainer = () => {
         >
           Sign Up
         </Button>
+        {errors.root && (
+          <p className="text-small text-danger-500 text-center">
+            {errors.root.message}
+          </p>
+        )}
       </form>
       <p className="text-small text-default-800 text-center hover:underline">
         <Link to={ROUTES.LOGIN_ROUTE}>Already have an account? Log In</Link>
