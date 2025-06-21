@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import { authReducer, noteReducer, themeReducer } from "@/features";
+import { authReducer, noteStoreReducer, themeReducer } from "@/features";
 
 export const store = configureStore({
   reducer: {
-    theme: themeReducer,
     auth: authReducer,
-    notes: noteReducer,
+    noteStore: noteStoreReducer,
+    theme: themeReducer,
   },
 });
 

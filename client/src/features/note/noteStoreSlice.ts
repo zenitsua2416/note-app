@@ -1,12 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { STORAGE } from "@/constants";
 import { Note, NoteStore, UUID } from "@/types";
 import { buildNoteStoreFromArray, loadFromStorage } from "@/utils";
 
-const initialState: NoteStore = loadFromStorage<NoteStore>("notes", {});
+const initialState: NoteStore = loadFromStorage<NoteStore>(
+  STORAGE.NOTE_STORE,
+  {},
+);
 
-export const noteSlice = createSlice({
-  name: "notes",
+export const noteStoreSlice = createSlice({
+  name: "noteStore",
   initialState,
   reducers: {
     addNotes: (state, action: PayloadAction<Note[]>) => ({
@@ -26,7 +30,8 @@ export const noteSlice = createSlice({
   },
 });
 
-export const selectNotes = (state: { notes: NoteStore }) => state.notes;
+export const selectNoteStore = (state: { noteStore: NoteStore }) =>
+  state.noteStore;
 
-export const { addNotes, removeNote, updateNote } = noteSlice.actions;
-export const { reducer: noteReducer } = noteSlice;
+export const { addNotes, removeNote, updateNote } = noteStoreSlice.actions;
+export const { reducer: noteStoreReducer } = noteStoreSlice;

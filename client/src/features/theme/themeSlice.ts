@@ -1,15 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { config } from "@/config";
+import { STORAGE, THEME } from "@/constants";
 import { Theme } from "@/types";
 import { loadFromStorage, saveToStorage } from "@/utils";
 
 import { ThemeState } from "./themeSlice.types";
 
-let defaultTheme = loadFromStorage<Theme>("theme");
+let defaultTheme = loadFromStorage<Theme>(STORAGE.THEME);
 
 if (!defaultTheme) {
-  saveToStorage("theme", config.defaultTheme);
+  saveToStorage(STORAGE.THEME, config.defaultTheme);
   defaultTheme = config.defaultTheme;
 }
 
@@ -22,13 +23,13 @@ export const themeSlice = createSlice({
   initialState,
   reducers: {
     lightTheme: (state) => {
-      state.theme = "light";
+      state.theme = THEME.LIGHT;
     },
     darkTheme: (state) => {
-      state.theme = "dark";
+      state.theme = THEME.DARK;
     },
     toggleTheme: (state) => {
-      state.theme = state.theme === "light" ? "dark" : "light";
+      state.theme = state.theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT;
     },
   },
 });
