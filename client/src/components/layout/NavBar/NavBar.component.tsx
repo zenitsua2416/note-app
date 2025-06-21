@@ -69,25 +69,20 @@ export const NavBar = () => {
           )}
         </div>
       </nav>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        backdrop="blur"
-        className="bg-neutral-100 dark:bg-neutral-800"
-      >
-        <ModalContent>
+      <Modal isOpen={isOpen} onClose={onClose} backdrop="blur">
+        <ModalContent className="text-default-800 bg-neutral-200 dark:bg-neutral-800">
           {(onClose) => (
             <>
               <ModalHeader>Are you sure?</ModalHeader>
               <ModalBody>
                 <p>You will be logged out.</p>
               </ModalBody>
-              <ModalFooter>
-                <Button variant="light" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button color="danger" variant="light" onPress={handleLogout}>
+              <ModalFooter className="flex flex-row-reverse justify-start gap-4">
+                <Button color="danger" variant="solid" onPress={handleLogout}>
                   Logout
+                </Button>
+                <Button color="default" variant="solid" onPress={onClose}>
+                  Cancel
                 </Button>
               </ModalFooter>
             </>
