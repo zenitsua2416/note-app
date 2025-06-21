@@ -8,3 +8,5 @@ export interface Note {
   in_trash: boolean;
   user_id: UUID;
 }
+
+export type NoteStore = Record<UUID, Note>;

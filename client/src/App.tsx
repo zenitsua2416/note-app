@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 
+import { THEME } from "@/constants";
 import { selectTheme } from "@/features";
 import { useAppSelector } from "@/hooks";
 import { router } from "@/routes";
@@ -18,7 +19,7 @@ const App = () => {
    * third-party code using Tailwind.
    */
   useEffect(() => {
-    document.body.classList.toggle("dark", theme === "dark");
+    document.body.classList.toggle("dark", theme === THEME.DARK);
   }, [theme]);
 
   return <RouterProvider router={router} />;
