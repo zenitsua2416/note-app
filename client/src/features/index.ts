@@ -10,5 +10,9 @@ export {
 } from "./auth/authSlice";
 export { login, logout } from "./auth/authSlice";
 
-export { noteSlice, noteReducer, selectNotes } from "./note/noteSlice";
-export { addNotes, removeNote, updateNote } from "./note/noteSlice";
+export {
+  noteStoreSlice,
+  noteStoreReducer,
+  selectNoteStore,
+} from "./note/noteStoreSlice";
+export { addNotes, removeNote, updateNote } from "./note/noteStoreSlice";

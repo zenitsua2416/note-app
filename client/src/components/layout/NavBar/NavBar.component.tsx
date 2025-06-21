@@ -1,9 +1,18 @@
 import { Link } from "react-router-dom";
 
-import { Switch, Button } from "@heroui/react";
+import {
+  Switch,
+  Button,
+  Modal,
+  ModalContent,
+  useDisclosure,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/react";
 import { Sun, Moon } from "lucide-react";
 
-import { ROUTES } from "@/constants";
+import { ROUTES, STORAGE, THEME } from "@/constants";
 import { logout, selectIsLoggedIn, selectTheme, toggleTheme } from "@/features";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { Theme } from "@/types";
@@ -12,19 +21,22 @@ import { saveToStorage } from "@/utils";
 const { HOME_ROUTE, LOGIN_ROUTE } = ROUTES;
 
 export const NavBar = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
-
   const { theme } = useAppSelector(selectTheme);
-
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   const handleToggleTheme = () => {
-    saveToStorage<Theme>("theme", theme === "light" ? "dark" : "light");
+    saveToStorage<Theme>(
+      STORAGE.THEME,
+      theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT,
+    );
     dispatch(toggleTheme());
   };
 
   const handleLogout = () => {
     dispatch(logout());
+    onClose();
   };
 
   return (
@@ -39,15 +51,15 @@ export const NavBar = () => {
 
         <div className="flex items-center gap-4">
           <Switch
-            defaultSelected={theme === "dark"}
-            isSelected={theme === "dark"}
+            defaultSelected={theme === THEME.DARK}
+            isSelected={theme === THEME.DARK}
             onChange={handleToggleTheme}
             startContent={<Sun />}
             endContent={<Moon />}
           />
 
           {isLoggedIn ? (
-            <Button variant="light" color="danger" onPress={handleLogout}>
+            <Button variant="light" color="danger" onPress={onOpen}>
               Logout
             </Button>
           ) : (
@@ -57,6 +69,26 @@ export const NavBar = () => {
           )}
         </div>
       </nav>
+      <Modal isOpen={isOpen} onClose={onClose} backdrop="blur">
+        <ModalContent className="text-default-800 bg-neutral-200 dark:bg-neutral-800">
+          {(onClose) => (
+            <>
+              <ModalHeader>Are you sure?</ModalHeader>
+              <ModalBody>
+                <p>You will be logged out.</p>
+              </ModalBody>
+              <ModalFooter className="flex flex-row-reverse justify-start gap-4">
+                <Button color="danger" variant="solid" onPress={handleLogout}>
+                  Logout
+                </Button>
+                <Button color="default" variant="solid" onPress={onClose}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </header>
   );
 };

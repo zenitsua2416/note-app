@@ -1,6 +1,5 @@
-import { Theme } from "./types";
-
-import { ROUTES } from "@/constants";
+import { ROUTES, THEME } from "@/constants";
+import { Theme } from "@/types";
 
 const { HOME_ROUTE, LOGIN_ROUTE } = ROUTES;
 
@@ -12,7 +11,7 @@ interface Config {
 }
 
 const config: Config = {
-  defaultTheme: "dark",
+  defaultTheme: THEME.DARK,
   protectedRouteFallback: LOGIN_ROUTE,
   restrictedPublicRouteFallback: HOME_ROUTE,
 };

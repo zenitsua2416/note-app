@@ -5,23 +5,27 @@ import { Button } from "@heroui/react";
 import { PlusIcon } from "lucide-react";
 
 import { NoteGrid } from "@/components/ui";
-import { ROUTES } from "@/constants";
-import { addNotes, selectNotes } from "@/features";
+import { ROUTES, STORAGE } from "@/constants";
+import { addNotes, selectNoteStore } from "@/features";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { supabase } from "@/supabase";
-import { Note as INote } from "@/types";
-import { saveToStorage } from "@/utils";
+import { NoteStore } from "@/types";
+import { buildNoteStoreFromArray, saveToStorage } from "@/utils";
 
 export const NoteListContainer = () => {
   const dispatch = useAppDispatch();
-  const notes = useAppSelector(selectNotes);
+  const noteStore = useAppSelector(selectNoteStore);
+  const notes = Object.values(noteStore);
 
   useEffect(() => {
     (async () => {
       const { data: notes } = await supabase.from("note").select("*");
       if (!notes) return;
 
-      saveToStorage<INote[]>("notes", notes);
+      saveToStorage<NoteStore>(
+        STORAGE.NOTE_STORE,
+        buildNoteStoreFromArray(notes),
+      );
       dispatch(addNotes(notes));
     })();
   }, [dispatch]);

@@ -1,6 +1,6 @@
 import { vi, Mock } from "vitest";
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
@@ -68,7 +68,7 @@ describe("NavBar", () => {
     expect(logoutBtn).toBeInTheDocument();
   });
 
-  it("should call logout handler on clicking the logout button", async () => {
+  it("should bring up Modal on clicking the logout button", async () => {
     setupNavBar(true);
 
     const user = userEvent.setup();
@@ -76,6 +76,17 @@ describe("NavBar", () => {
 
     await user.click(logoutBtn);
 
+    const modal = screen.getByRole("dialog");
+    expect(modal).toBeInTheDocument();
+
+    const modalUtils = within(modal);
+    const logoutBtnInModal = modalUtils.getByRole("button", {
+      name: /logout/i,
+    });
+
+    expect(logoutBtnInModal).toBeInTheDocument();
+
+    await user.click(logoutBtnInModal);
     expect(mockedDispatch).toHaveBeenCalledWith(logout());
   });
 });
