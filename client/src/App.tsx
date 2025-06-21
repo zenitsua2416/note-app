@@ -1,6 +1,6 @@
 import { RouterProvider } from "react-router-dom";
 
-import { THEME } from "./constants";
+import { THEME } from "@/constants";
 import { selectTheme } from "@/features";
 import { useAppSelector } from "@/hooks";
 import { router } from "@/routes";
