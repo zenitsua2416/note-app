@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 
 import {
-  Switch,
+  Avatar,
   Button,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalBody,
+  ModalContent,
   ModalFooter,
+  ModalHeader,
+  Switch,
 } from "@heroui/react";
 import { Sun, Moon } from "lucide-react";
 
@@ -19,11 +20,12 @@ const { HOME_ROUTE, LOGIN_ROUTE } = ROUTES;
 
 export const NavBar = ({
   theme,
+  userProfile,
   isLoggedIn,
   isConfirmModalOpen,
   onToggleTheme,
   onLogout,
-  onOpenConfirmModal,
+  // onOpenConfirmModal,      //  TODO: Implement this
   onCloseConfirmModal,
 }: NavBarProps) => (
   <header className="sticky top-0 w-full border shadow-md backdrop-blur-md dark:border-neutral-800">
@@ -45,8 +47,12 @@ export const NavBar = ({
         />
 
         {isLoggedIn ? (
-          <Button variant="light" color="danger" onPress={onOpenConfirmModal}>
-            Logout
+          <Button isIconOnly radius="full">
+            <Avatar
+              src={userProfile?.avatar_url || undefined}
+              name={userProfile?.full_name || userProfile.email}
+              showFallback
+            />
           </Button>
         ) : (
           <Button as={Link} to={LOGIN_ROUTE} variant="light">
