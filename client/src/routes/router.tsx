@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { withProtected, withRestrictedPublic } from "@/components/auth";
 import { DefaultLayout } from "@/layouts";
 import {
+  AccountPage,
   ForgotPasswordPage,
   HomePage,
   LoginPage,
@@ -12,6 +13,7 @@ import {
   SignupPage,
 } from "@/pages";
 
+const Account = withProtected(AccountPage);
 const ForgotPassword = withRestrictedPublic(ForgotPasswordPage);
 const Home = withProtected(HomePage);
 const NewNote = withProtected(NewNotePage);
@@ -62,6 +64,10 @@ export const router = createBrowserRouter([
             element: <Note />,
           },
         ],
+      },
+      {
+        path: "account",
+        element: <Account />,
       },
       {
         path: "*",
