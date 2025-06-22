@@ -22,6 +22,9 @@ export default {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
       },
+      zIndex: {
+        header: "500",
+      },
     },
   },
   darkMode: "class",
