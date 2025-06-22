@@ -1,3 +1,4 @@
+export { AccountPage } from "./account";
 export { ForgotPasswordPage } from "./forgot-password";
 export { HomePage } from "./home";
 export { LoginPage } from "./login";
