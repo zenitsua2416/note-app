@@ -52,7 +52,7 @@ export const NavBar = ({
 
         {isLoggedIn ? (
           <Dropdown
-            className="text-default-900 bg-neutral-800"
+            className="text-default-900 dark:bg-neutral-800"
             placement="bottom-end"
           >
             <DropdownTrigger>
