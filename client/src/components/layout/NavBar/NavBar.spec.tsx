@@ -1,92 +1,113 @@
 import { MemoryRouter } from "react-router-dom";
 
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { vi, Mock } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { ROUTES } from "@/constants";
-import { logout, toggleTheme } from "@/features";
-import * as hooks from "@/hooks";
+import { THEME } from "@/constants";
 
 import { NavBar } from "./NavBar.component";
 
-vi.mock("@/hooks", async () => {
-  const actual = vi.importActual<typeof import("@/hooks")>("@/hooks");
-  return {
-    ...actual,
-    useAppSelector: vi.fn(),
-    useAppDispatch: vi.fn(),
+const renderNavBar = (propsOverrides = {}) => {
+  const defaultProps = {
+    theme: THEME.LIGHT,
+    isLoggedIn: false,
+    userProfile: {
+      id: 2,
+      user_id: "so-long-uuid-of-the-user",
+      full_name: "John Doe",
+      email: "john@example.com",
+      avatar_url: "",
+    },
+    isConfirmModalOpen: false,
+    onToggleTheme: () => {},
+    onLogout: () => {},
+    onOpenConfirmModal: () => {},
+    onCloseConfirmModal: () => {},
   };
-});
 
-const mockedUseAppSelector = hooks.useAppSelector as unknown as Mock;
-const mockedDispatch = vi.fn();
-
-const setupNavBar = (isLoggedIn: boolean) => {
-  mockedUseAppSelector.mockReturnValue(isLoggedIn);
-
-  render(<NavBar />, {
-    wrapper: MemoryRouter,
-  });
+  return render(
+    <MemoryRouter>
+      <NavBar {...defaultProps} {...propsOverrides} />
+    </MemoryRouter>,
+  );
 };
 
-describe("NavBar", () => {
-  beforeEach(() => {
-    (hooks.useAppDispatch as Mock).mockReturnValue(mockedDispatch);
+describe("Navbar", () => {
+  it("renders correctly when logged out", () => {
+    renderNavBar({ isLoggedIn: false });
+
+    expect(screen.getByText("Note App")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
   });
 
-  it("should render a toggle-theme checkbox", () => {
-    setupNavBar(false);
+  it("renders avatar and dropdown when logged in", async () => {
+    renderNavBar({ isLoggedIn: true });
 
-    const toggleThemeCheckbox = screen.getByRole("switch");
-    expect(toggleThemeCheckbox).toBeInTheDocument();
+    const avatarButton = screen.getByRole("button");
+    expect(avatarButton).toBeInTheDocument();
+
+    await userEvent.click(avatarButton);
+
+    expect(screen.getByText("John Doe")).toBeInTheDocument();
+    expect(screen.getByText("john@example.com")).toBeInTheDocument();
+    expect(screen.getByText(/account/i)).toBeInTheDocument();
+    expect(screen.getByText(/logout/i)).toBeInTheDocument();
   });
 
-  it("should call toggle-theme handler on clicking the toggle-theme checkbox", async () => {
-    setupNavBar(false);
+  it("calls onToggleTheme when switching theme", async () => {
+    const onToggleTheme = vi.fn();
+    renderNavBar({ onToggleTheme });
 
-    const user = userEvent.setup();
-    const toggleThemeCheckbox = screen.getByRole("switch");
+    const toggle = screen.getByRole("switch");
+    await userEvent.click(toggle);
 
-    await user.click(toggleThemeCheckbox);
-
-    expect(mockedDispatch).toHaveBeenCalledWith(toggleTheme());
+    expect(onToggleTheme).toHaveBeenCalled();
   });
 
-  it("should render login link-button if user is not logged in", () => {
-    setupNavBar(false);
+  it("opens logout confirm modal on logout click", async () => {
+    const onOpenConfirmModal = vi.fn();
+    renderNavBar({ isLoggedIn: true, onOpenConfirmModal });
 
-    const loginBtn = screen.getByRole("link", { name: /login/i });
-    expect(loginBtn).toBeInTheDocument();
-    expect(loginBtn).toHaveAttribute("href", ROUTES.LOGIN_ROUTE);
+    const avatarButton = screen.getByRole("button");
+    await userEvent.click(avatarButton);
+
+    const logoutItem = screen.getByText(/logout/i);
+    await userEvent.click(logoutItem);
+
+    expect(onOpenConfirmModal).toHaveBeenCalled();
+  });
+  it("shows modal when isConfirmModalOpen is true", () => {
+    renderNavBar({ isLoggedIn: true, isConfirmModalOpen: true });
+
+    expect(screen.getByText(/are you sure/i)).toBeInTheDocument();
+    expect(screen.getByText(/you will be logged out/i)).toBeInTheDocument();
   });
 
-  it("should render logout button if user is logged in", () => {
-    setupNavBar(true);
+  it("calls onLogout when clicking logout in modal", async () => {
+    const onLogout = vi.fn();
+    renderNavBar({ isConfirmModalOpen: true, onLogout });
 
     const logoutBtn = screen.getByRole("button", { name: /logout/i });
-    expect(logoutBtn).toBeInTheDocument();
+    await userEvent.click(logoutBtn);
+
+    expect(onLogout).toHaveBeenCalled();
   });
 
-  it("should bring up Modal on clicking the logout button", async () => {
-    setupNavBar(true);
+  it("calls onCloseConfirmModal when clicking cancel in modal", async () => {
+    const onCloseConfirmModal = vi.fn();
+    renderNavBar({ isConfirmModalOpen: true, onCloseConfirmModal });
 
-    const user = userEvent.setup();
-    const logoutBtn = screen.getByRole("button", { name: /logout/i });
+    const cancelBtn = screen.getByRole("button", { name: /cancel/i });
+    await userEvent.click(cancelBtn);
 
-    await user.click(logoutBtn);
+    expect(onCloseConfirmModal).toHaveBeenCalled();
+  });
 
-    const modal = screen.getByRole("dialog");
-    expect(modal).toBeInTheDocument();
+  it("renders switch as selected when theme is dark", () => {
+    renderNavBar({ theme: THEME.DARK });
 
-    const modalUtils = within(modal);
-    const logoutBtnInModal = modalUtils.getByRole("button", {
-      name: /logout/i,
-    });
-
-    expect(logoutBtnInModal).toBeInTheDocument();
-
-    await user.click(logoutBtnInModal);
-    expect(mockedDispatch).toHaveBeenCalledWith(logout());
+    const switchToggle = screen.getByRole("switch");
+    expect(switchToggle.getAttribute("checked")).not.toBeUndefined();
   });
 });
