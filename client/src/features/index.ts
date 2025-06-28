@@ -16,3 +16,10 @@ export {
   selectNoteStore,
 } from "./note/noteStoreSlice";
 export { addNotes, removeNote, updateNote } from "./note/noteStoreSlice";
+
+export {
+  userProfileSlice,
+  userProfileReducer,
+  selectUserProfile,
+} from "./userProfile/userProfileSlice";
+export { setUserProfile } from "./userProfile/userProfileSlice";
