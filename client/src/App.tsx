@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 
+import { Toaster } from "sonner";
+
 import { THEME } from "@/constants";
 import { selectTheme } from "@/features";
 import { useAppSelector } from "@/hooks";
@@ -22,7 +24,21 @@ const App = () => {
     document.body.classList.toggle("dark", theme === THEME.DARK);
   }, [theme]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <Toaster
+        richColors
+        closeButton
+        position="top-right"
+        offset={{
+          top: 60,
+          right: 20,
+        }}
+        theme={theme === THEME.LIGHT ? "light" : "dark"}
+      />
+      <RouterProvider router={router} />
+    </>
+  );
 };
 
 export default App;
