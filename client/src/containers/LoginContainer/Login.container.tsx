@@ -43,6 +43,7 @@ export const LoginContainer = () => {
       email: data.email,
       password: data.password,
     });
+    console.log(session);
 
     if (error) setError("root", { message: error.message });
     else if (session) {
