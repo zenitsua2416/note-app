@@ -77,9 +77,10 @@ export const ResetPasswordContainer = () => {
     [setError, notify, dispatch],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSubmit = useCallback(
     debounce(onSubmitHandler, 1500, { leading: true, trailing: false }),
-    [],
+    [onSubmitHandler],
   );
 
   const toggleVisibility = () => setIsVisible(!isVisible);

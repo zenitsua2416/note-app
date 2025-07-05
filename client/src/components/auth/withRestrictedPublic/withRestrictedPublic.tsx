@@ -9,12 +9,11 @@ import { useAppSelector } from "@/hooks";
  * HOC that prevents authenticated users from accessing public-only components
  * (e.g. login/register pages).
  */
-export const withRestrictedPublic =
-  <P extends object>(
-    Component: ComponentType<P>,
-    fallbackRoute: string = config.restrictedPublicRouteFallback,
-  ) =>
-  (props: P) => {
+export const withRestrictedPublic = <P extends object>(
+  Component: ComponentType<P>,
+  fallbackRoute: string = config.restrictedPublicRouteFallback,
+) => {
+  const WithRestrictedPublic = (props: P) => {
     const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
     if (isLoggedIn) {
@@ -23,3 +22,8 @@ export const withRestrictedPublic =
 
     return <Component {...props} />;
   };
+
+  WithRestrictedPublic.displayName = `withRestrictedPublic(${Component.displayName || Component.name})`;
+
+  return WithRestrictedPublic;
+};
