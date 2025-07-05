@@ -3,10 +3,10 @@
 
 import path from "node:path";
 
-import { defineConfig, loadEnv, UserConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import viteCompression from "vite-plugin-compression";
 import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig, loadEnv, UserConfig } from "vite";
+import viteCompression from "vite-plugin-compression";
 
 /* Common Config for both PROD and DEV mode */
 const commonConfig: UserConfig = {

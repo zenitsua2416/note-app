@@ -1,15 +1,15 @@
 import { useCallback } from "react";
-import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 import { Button, Input } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { ROUTES } from "@/constants";
+import { useNotify } from "@/hooks";
 import { supabase } from "@/supabase";
 import { getEnv } from "@/utils";
-import { useNotify } from "@/hooks";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
