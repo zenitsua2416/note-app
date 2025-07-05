@@ -1,8 +1,8 @@
-import { vi, Mock } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { vi, Mock } from "vitest";
 
 import { ROUTES } from "@/constants";
 import { logout, toggleTheme } from "@/features";

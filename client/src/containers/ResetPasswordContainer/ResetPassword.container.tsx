@@ -2,15 +2,14 @@ import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button, Input } from "@heroui/react";
-import { Eye, EyeClosed } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import debounce from "lodash.debounce";
+import { Eye, EyeClosed } from "lucide-react";
 import { z } from "zod";
 
-import { supabase } from "@/supabase";
-
-import { useAppDispatch, useNotify } from "@/hooks";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { logout } from "@/features";
+import { useAppDispatch, useNotify } from "@/hooks";
+import { supabase } from "@/supabase";
 
 const resetPasswordSchema = z
   .object({
@@ -78,9 +77,10 @@ export const ResetPasswordContainer = () => {
     [setError, notify, dispatch],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSubmit = useCallback(
     debounce(onSubmitHandler, 1500, { leading: true, trailing: false }),
-    [],
+    [onSubmitHandler],
   );
 
   const toggleVisibility = () => setIsVisible(!isVisible);

@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+
 import { withProtected, withRestrictedPublic } from "@/components/auth";
 import { DefaultLayout } from "@/layouts";
 import {
